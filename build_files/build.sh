@@ -46,7 +46,9 @@ dnf5 install -y \
     topgrade \
     ImageMagick \
     inotify-tools \
-    swaybg
+    swaybg \
+    intel-media-driver \
+    libva-intel-driver
 
 # 3. Abilitiamo i servizi di sistema
 systemctl enable tailscaled.service
