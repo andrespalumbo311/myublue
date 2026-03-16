@@ -10,7 +10,6 @@ dnf5 -y copr enable sdegler/hyprland
 dnf5 install -y \
     @cosmic-desktop-environment \
     hyprland \
-    hyprwayland-scanner \
     hypridle \
     hyprlock \
     hyprshot \
@@ -22,7 +21,7 @@ dnf5 install -y \
     greetd \
     tuigreet \
     tailscale \
-    gnome-software
+    bauh
 
 # Abilitiamo i servizi di sistema necessari
 systemctl enable tailscaled.service
