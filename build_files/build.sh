@@ -48,7 +48,8 @@ dnf5 install -y \
     inotify-tools \
     swaybg \
     intel-media-driver \
-    libva-intel-driver
+    libva-intel-driver \
+    development-tools
 
 # 3. Abilitiamo i servizi di sistema
 systemctl enable tailscaled.service
