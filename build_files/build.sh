@@ -16,6 +16,7 @@ dnf5 install -y \
     hypridle \
     hyprlock \
     hyprshot \
+    waybar \
     cliphist \
     kitty \
     wofi \
@@ -23,7 +24,14 @@ dnf5 install -y \
     freerdp \
     greetd \
     tailscale \
-    topgrade
+    topgrade \
+    git \
+    cmake \
+    gcc \
+    gcc-c++ \
+    cpio \
+    pkgconf-pkg-config \
+    meson
 
 # 3. Abilitiamo i servizi di sistema
 systemctl enable tailscaled.service
