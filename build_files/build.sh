@@ -22,10 +22,8 @@ dnf5 install -y \
     pamixer \
     freerdp \
     greetd \
-    tuigreet \
     tailscale \
     topgrade
 
 # 3. Abilitiamo i servizi di sistema
 systemctl enable tailscaled.service
-systemctl enable greetd.service
