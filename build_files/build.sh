@@ -3,10 +3,13 @@ set -ouex pipefail
 
 echo "Inizio installazione pacchetti personalizzati..."
 
-# 1. Abilitiamo il COPR della community funzionante per Fedora 43
+# 1. Abilitiamo i COPR necessari
+# Per Hyprland e i suoi tool su Fedora 43
 dnf5 -y copr enable sdegler/hyprland
+# Per Topgrade (come indicato nella documentazione che hai trovato)
+dnf5 -y copr enable lilay/topgrade
 
-# 2. Installiamo COSMIC (come gruppo) e i pacchetti di Hyprland (dal COPR)
+# 2. Installiamo tutto il pacchetto
 dnf5 install -y \
     @cosmic-desktop-environment \
     hyprland \
@@ -23,6 +26,6 @@ dnf5 install -y \
     tailscale \
     topgrade
 
-# Abilitiamo i servizi di sistema necessari
+# 3. Abilitiamo i servizi di sistema
 systemctl enable tailscaled.service
 systemctl enable greetd.service
