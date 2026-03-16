@@ -21,7 +21,7 @@ dnf5 install -y \
     greetd \
     tuigreet \
     tailscale \
-    bauh
+    topgrade
 
 # Abilitiamo i servizi di sistema necessari
 systemctl enable tailscaled.service
