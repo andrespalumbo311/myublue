@@ -13,25 +13,37 @@ dnf5 -y copr enable lilay/topgrade
 dnf5 install -y \
     @cosmic-desktop-environment \
     hyprland \
+    hyprland-devel \
+    aquamarine-devel \
+    hyprlang-devel \
+    hyprutils-devel \
+    waybar \
+    distrobox \
+    ffmpeg \
+    git \
+    cmake \
+    gcc \
+    gcc-c++ \
+    meson \
+    cpio \
+    pkgconf-pkg-config \
+    brightnessctl \
+    network-manager-applet \
+    blueman \
+    micro \
+    grim \
+    slurp \
+    pavucontrol \
     hypridle \
     hyprlock \
     hyprshot \
-    waybar \
     cliphist \
     kitty \
     wofi \
     pamixer \
     freerdp \
-    greetd \
     tailscale \
-    topgrade \
-    git \
-    cmake \
-    gcc \
-    gcc-c++ \
-    cpio \
-    pkgconf-pkg-config \
-    meson
+    topgrade
 
 # 3. Abilitiamo i servizi di sistema
 systemctl enable tailscaled.service
