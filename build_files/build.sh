@@ -43,7 +43,10 @@ dnf5 install -y \
     pamixer \
     freerdp \
     tailscale \
-    topgrade
+    topgrade \
+    ImageMagick \
+    inotify-tools \
+    swaybg
 
 # 3. Abilitiamo i servizi di sistema
 systemctl enable tailscaled.service
