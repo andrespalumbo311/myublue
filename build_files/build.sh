@@ -43,5 +43,13 @@ dnf5 install -y \
     inotify-tools \
     swaybg
 
+# Compilazione e installazione di wl-clip-persist
+echo "Compilazione wl-clip-persist..."
+dnf5 install -y cargo
+cargo install wl-clip-persist --root /tmp/cargo-build
+cp /tmp/cargo-build/bin/wl-clip-persist /usr/bin/
+dnf5 remove -y cargo
+rm -rf /tmp/cargo-build
+
 # 3. Abilitiamo i servizi di sistema
 systemctl enable tailscaled.service
