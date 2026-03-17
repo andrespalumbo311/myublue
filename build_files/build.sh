@@ -46,8 +46,8 @@ dnf5 install -y \
 # Compilazione e installazione di wl-clip-persist
 echo "Compilazione wl-clip-persist..."
 dnf5 install -y cargo
-# Diciamo a Cargo di usare /tmp per tutta la sua cache per evitare conflitti di permessi
-CARGO_HOME=/tmp/cargo-home cargo install wl-clip-persist --root /tmp/cargo-build
+# Scarichiamo e compiliamo direttamente dal repository GitHub ufficiale
+CARGO_HOME=/tmp/cargo-home cargo install --git https://github.com/Linus789/wl-clip-persist.git wl-clip-persist --root /tmp/cargo-build
 cp /tmp/cargo-build/bin/wl-clip-persist /usr/bin/
 dnf5 remove -y cargo
 rm -rf /tmp/cargo-build /tmp/cargo-home
