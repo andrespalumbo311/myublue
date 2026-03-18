@@ -42,7 +42,9 @@ dnf5 install -y \
     topgrade \
     inotify-tools \
     swaybg \
-    powertop
+    powertop \
+    tlp \
+    tlp-rdw
 
 # Compilazione e installazione di wl-clip-persist
 echo "Compilazione wl-clip-persist..."
