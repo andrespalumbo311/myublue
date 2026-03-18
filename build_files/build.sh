@@ -41,7 +41,8 @@ dnf5 install -y \
     tailscale \
     topgrade \
     inotify-tools \
-    swaybg
+    swaybg \
+    powertop
 
 # Compilazione e installazione di wl-clip-persist
 echo "Compilazione wl-clip-persist..."
