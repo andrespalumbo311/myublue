@@ -39,7 +39,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     meson setup build && \
     ninja -C build && \
     mkdir -p /usr/lib64/hyprland/plugins && \
-    cp build/hyprgrass.so /usr/lib64/hyprland/plugins/ && \
+    cp build/src/libhyprgrass.so /usr/lib64/hyprland/plugins/hyprgrass.so && \
     rm -rf /tmp/hyprgrass
 
 # STRATO 6: Ecosistema COSMIC
