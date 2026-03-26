@@ -28,11 +28,19 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     brightnessctl network-manager-applet blueman grim slurp \
     pavucontrol cliphist kitty wofi pamixer swaybg
 
-# STRATO 5: Ecosistema Hyprland
+# STRATO 5: Ecosistema Hyprland e compilazione plugin Hyprgrass
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     hyprland hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel \
-    waybar hypridle hyprlock hyprshot
+    waybar hypridle hyprlock hyprshot \
+    glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build && \
+    git clone https://github.com/horriblename/hyprgrass.git /tmp/hyprgrass && \
+    cd /tmp/hyprgrass && \
+    meson setup build && \
+    ninja -C build && \
+    mkdir -p /usr/lib64/hyprland/plugins && \
+    cp build/hyprgrass.so /usr/lib64/hyprland/plugins/ && \
+    rm -rf /tmp/hyprgrass
 
 # STRATO 6: Ecosistema COSMIC
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
