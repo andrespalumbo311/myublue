@@ -28,20 +28,23 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     brightnessctl network-manager-applet blueman grim slurp \
     pavucontrol cliphist kitty wofi pamixer swaybg
 
-# STRATO 5: Ecosistema Hyprland e compilazione plugin Hyprgrass
+# STRATO 5: Ecosistema Hyprland e compilazione deterministica Hyprgrass
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     hyprland waybar hypridle hyprlock hyprshot \
     hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel \
-    glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build && \
+    glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build gcc-c++ cmake python3 && \
     git clone https://github.com/horriblename/hyprgrass.git /tmp/hyprgrass && \
     cd /tmp/hyprgrass && \
+    HL_VER=$(pkg-config --modversion hyprland) && \
+    TARGET=$(python3 -c "import tomllib, sys; d=tomllib.load(open('hyprpm.toml', 'rb')); print(next((r['hash'] for r in d['repository']['revisions'] if sys.argv[1] in r['hyprland']), ''))" "$HL_VER") && \
+    if [ -n "$TARGET" ]; then git checkout "$TARGET"; fi && \
     meson setup build && \
     ninja -C build && \
     mkdir -p /usr/lib64/hyprland/plugins && \
     cp build/src/libhyprgrass.so /usr/lib64/hyprland/plugins/hyprgrass.so && \
     rm -rf /tmp/hyprgrass && \
-    dnf5 remove -y hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build
+    dnf5 remove -y hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build gcc-c++ cmake python3
 
 # STRATO 6: Ecosistema COSMIC
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
