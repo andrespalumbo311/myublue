@@ -31,8 +31,8 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 # STRATO 5: Ecosistema Hyprland e compilazione plugin Hyprgrass
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
-    hyprland hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel \
-    waybar hypridle hyprlock hyprshot \
+    hyprland waybar hypridle hyprlock hyprshot \
+    hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel \
     glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build && \
     git clone https://github.com/horriblename/hyprgrass.git /tmp/hyprgrass && \
     cd /tmp/hyprgrass && \
@@ -40,7 +40,8 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     ninja -C build && \
     mkdir -p /usr/lib64/hyprland/plugins && \
     cp build/src/libhyprgrass.so /usr/lib64/hyprland/plugins/hyprgrass.so && \
-    rm -rf /tmp/hyprgrass
+    rm -rf /tmp/hyprgrass && \
+    dnf5 remove -y hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build
 
 # STRATO 6: Ecosistema COSMIC
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
