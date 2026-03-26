@@ -28,23 +28,24 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     brightnessctl network-manager-applet blueman grim slurp \
     pavucontrol cliphist kitty wofi pamixer swaybg
 
-# STRATO 5: Ecosistema Hyprland e compilazione deterministica Hyprgrass
+# STRATO 5: Ecosistema Hyprland e compilazione dinamica tramite hyprpm isolato
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
+    export XDG_RUNTIME_DIR=/tmp/runtime-root && \
+    export XDG_CACHE_HOME=/tmp/cache-root && \
+    export XDG_DATA_HOME=/tmp/data-root && \
+    mkdir -p $XDG_RUNTIME_DIR $XDG_CACHE_HOME $XDG_DATA_HOME && \
     dnf5 install -y \
     hyprland waybar hypridle hyprlock hyprshot \
     hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel \
-    glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build gcc-c++ cmake python3 && \
-    git clone https://github.com/horriblename/hyprgrass.git /tmp/hyprgrass && \
-    cd /tmp/hyprgrass && \
-    HL_VER=$(pkg-config --modversion hyprland) && \
-    TARGET=$(python3 -c "import tomllib, sys; d=tomllib.load(open('hyprpm.toml', 'rb')); print(next((r['hash'] for r in d['repository']['revisions'] if sys.argv[1] in r['hyprland']), ''))" "$HL_VER") && \
-    if [ -n "$TARGET" ]; then git checkout "$TARGET"; fi && \
-    meson setup build && \
-    ninja -C build && \
+    glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build gcc-c++ cmake git && \
+    hyprpm update && \
+    hyprpm add https://github.com/horriblename/hyprgrass || true && \
     mkdir -p /usr/lib64/hyprland/plugins && \
-    cp build/src/libhyprgrass.so /usr/lib64/hyprland/plugins/hyprgrass.so && \
-    rm -rf /tmp/hyprgrass && \
-    dnf5 remove -y hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build gcc-c++ cmake python3
+    PLUGIN_PATH=$(find $XDG_DATA_HOME/hyprpm -name "libhyprgrass.so" | head -n 1) && \
+    if [ -z "$PLUGIN_PATH" ]; then echo "Errore critico: libhyprgrass.so non compilato"; exit 1; fi && \
+    cp "$PLUGIN_PATH" /usr/lib64/hyprland/plugins/hyprgrass.so && \
+    dnf5 remove -y hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build gcc-c++ cmake && \
+    rm -rf $XDG_RUNTIME_DIR $XDG_CACHE_HOME $XDG_DATA_HOME
 
 # STRATO 6: Ecosistema COSMIC
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
