@@ -31,16 +31,18 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 # STRATO 5: Ecosistema Hyprland e compilazione tramite utente temporaneo
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
-    hyprland waybar hypridle hyprlock hyprshot \
+    sudo hyprland waybar hypridle hyprlock hyprshot \
     hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel \
     glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build gcc-c++ cmake git && \
     useradd -m builder && \
+    echo "builder ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/builder && \
     su - builder -c 'export XDG_RUNTIME_DIR=/tmp/runtime-builder && mkdir -p $XDG_RUNTIME_DIR && hyprpm update && hyprpm add https://github.com/horriblename/hyprgrass || true' && \
     mkdir -p /usr/lib64/hyprland/plugins && \
     PLUGIN_PATH=$(find /home/builder/.local/share/hyprpm -name "libhyprgrass.so" | head -n 1) && \
     if [ -z "$PLUGIN_PATH" ]; then echo "Errore: libhyprgrass.so non trovato"; exit 1; fi && \
     cp "$PLUGIN_PATH" /usr/lib64/hyprland/plugins/hyprgrass.so && \
     userdel -r builder && \
+    rm -f /etc/sudoers.d/builder && \
     dnf5 remove -y hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build gcc-c++ cmake git
 
 # STRATO 6: Ecosistema COSMIC
