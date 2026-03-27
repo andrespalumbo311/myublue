@@ -28,7 +28,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     brightnessctl network-manager-applet blueman grim slurp \
     pavucontrol cliphist kitty wofi pamixer swaybg
 
-# STRATO 5: Ecosistema Hyprland e compilazione deterministica
+# STRATO 5: Ecosistema Hyprland e compilazione deterministica (pulizia sicura)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     hyprland waybar hypridle hyprlock hyprshot \
@@ -44,7 +44,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     mkdir -p /usr/lib64/hyprland/plugins && \
     cp build/src/libhyprgrass.so /usr/lib64/hyprland/plugins/hyprgrass.so && \
     rm -rf /tmp/hyprgrass && \
-    dnf5 remove -y hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel glm-devel glibmm24-devel pulseaudio-libs-devel meson ninja-build gcc-c++ cmake python3
+    dnf5 remove -y meson ninja-build cmake glm-devel glibmm24-devel pulseaudio-libs-devel hyprland-devel aquamarine-devel hyprlang-devel hyprutils-devel
 
 # STRATO 6: Ecosistema COSMIC
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
