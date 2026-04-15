@@ -14,7 +14,8 @@ COPY --from=builder /tmp/cargo-build/bin/wl-clip-persist /usr/bin/wl-clip-persis
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable yalter/niri && \
     dnf5 -y copr enable zhangyi6324/noctalia-shell && \
-    dnf5 -y copr enable lilay/topgrade
+    dnf5 -y copr enable lilay/topgrade && \
+    dnf5 -y copr enable tole-frenk/swww
 
 # STRATO 2: Utilità CLI e System Tooling
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
@@ -27,7 +28,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri noctalia-shell fuzzel \
     brightnessctl grim slurp \
-    pavucontrol cliphist kitty pamixer
+    pavucontrol cliphist kitty pamixer swww
 
 # STRATO 4: Ecosistema COSMIC (Mantenuto come backup DE completo)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
