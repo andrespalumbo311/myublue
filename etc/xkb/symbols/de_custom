@@ -9,4 +9,6 @@ partial alphanumeric_keys
 xkb_symbols "swap_ssharp_question" {
     include "de(basic)"
     key <AE11> { [ question, ssharp, backslash ] };
+    key <AD06> { [ y, Y ] };
+    key <AB01> { [ z, Z ] };
 };
