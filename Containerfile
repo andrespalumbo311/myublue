@@ -15,7 +15,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable yalter/niri && \
     dnf5 -y copr enable zhangyi6324/noctalia-shell && \
     dnf5 -y copr enable lilay/topgrade && \
-    dnf5 -y copr enable tole-frenk/swww
+    dnf5 -y copr enable scottames/awww
 
 # STRATO 2: Utilità CLI e System Tooling
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
@@ -28,7 +28,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri noctalia-shell fuzzel \
     brightnessctl grim slurp \
-    pavucontrol cliphist kitty pamixer swww
+    pavucontrol cliphist kitty pamixer awww
 
 # STRATO 4: Ecosistema COSMIC (Mantenuto come backup DE completo)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
