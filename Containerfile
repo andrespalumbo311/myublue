@@ -26,8 +26,8 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri noctalia-shell fuzzel \
-    brightnessctl network-manager-applet blueman grim slurp \
-    pavucontrol cliphist kitty pamixer swaybg
+    brightnessctl grim slurp \
+    pavucontrol cliphist kitty pamixer
 
 # STRATO 4: Ecosistema COSMIC (Mantenuto come backup DE completo)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
@@ -35,6 +35,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     @cosmic-desktop-environment
 
 # STRATO 5: Configurazione servizi e finalizzazione
+COPY etc /etc
 RUN systemctl enable tailscaled.service
 
 ### LINTING
