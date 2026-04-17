@@ -22,17 +22,13 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     git cmake gcc gcc-c++ meson micro tailscale topgrade \
     inotify-tools powertop tlp tlp-rdw freerdp
 
-# STRATO 3: Ambiente Grafico Niri + Noctalia (Rimossi Hyprland, Waybar e Wofi)
+# STRATO 3: Ambiente Grafico Niri + Noctalia + Utility (Nautilus aggiunto come file manager)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri noctalia-shell fuzzel \
     brightnessctl grim slurp \
-    pavucontrol cliphist kitty pamixer
-
-# STRATO 4: Ecosistema COSMIC (Mantenuto come backup DE completo)
-RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
-    dnf5 install -y \
-    @cosmic-desktop-environment
+    pavucontrol cliphist kitty pamixer \
+    nautilus gvfs-mtp gvfs-smb
 
 # STRATO 5: Configurazione servizi e finalizzazione
 COPY etc /etc
