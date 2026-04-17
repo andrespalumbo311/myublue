@@ -35,7 +35,8 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 
 # STRATO 5: Configurazione servizi e finalizzazione
 COPY etc /etc
-RUN systemctl enable tailscaled.service greetd.service uupd.timer && \
+RUN usermod -aG video,render greetd || true && \
+    systemctl enable tailscaled.service greetd.service uupd.timer && \
     systemctl disable rpm-ostreed-automatic.timer
 ### LINTING
 RUN bootc container lint
