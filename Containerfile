@@ -30,7 +30,8 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     greetd tuigreet fprintd \
     brightnessctl grim slurp \
     pavucontrol cliphist kitty pamixer \
-    nautilus gvfs-mtp gvfs-smb
+    nautilus gvfs-mtp gvfs-smb \
+    uwsm
 
 # STRATO 5: Configurazione servizi e finalizzazione
 COPY etc /etc
