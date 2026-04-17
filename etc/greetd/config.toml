@@ -1,3 +1,7 @@
+[terminal]
+# The VT to run on
+vt = 1
+
 [default_session]
 command = "/usr/bin/tuigreet --time --remember --remember-user --cmd /usr/bin/niri"
 user = "greetd"
