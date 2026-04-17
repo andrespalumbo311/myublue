@@ -28,15 +28,16 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri noctalia-shell fuzzel \
-    greetd tuigreet fprintd \
+    greetd tuigreet fprintd fprintd-pam \
     brightnessctl grim slurp \
     pavucontrol cliphist kitty pamixer \
-    nautilus gvfs-mtp gvfs-smb
+    nautilus gvfs-mtp gvfs-smb \
+    uupd
 
-# STRATO 5: Configurazione servizi e finalizzazione
-COPY etc /etc
-RUN systemctl enable tailscaled.service greetd.service uupd.timer && \
+    # STRATO 5: Configurazione servizi e finalizzazione
+    COPY etc /etc
+    RUN authselect select minimal --force && \
+    systemctl enable tailscaled.service greetd.service uupd.timer && \
     systemctl disable rpm-ostreed-automatic.timer
-
 ### LINTING
 RUN bootc container lint
