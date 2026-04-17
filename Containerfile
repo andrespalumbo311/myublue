@@ -15,8 +15,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable yalter/niri && \
     dnf5 -y copr enable zhangyi6324/noctalia-shell && \
     dnf5 -y copr enable lilay/topgrade && \
-    dnf5 -y copr enable ublue-os/packages && \
-    dnf5 -y copr enable alebastr/uwsm
+    dnf5 -y copr enable ublue-os/packages
 
 # STRATO 2: Utilità CLI e System Tooling
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
@@ -32,8 +31,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     greetd tuigreet fprintd \
     brightnessctl grim slurp \
     pavucontrol cliphist kitty pamixer \
-    nautilus gvfs-mtp gvfs-smb \
-    uwsm
+    nautilus gvfs-mtp gvfs-smb
 
 # STRATO 5: Configurazione servizi e finalizzazione
 COPY etc /etc
