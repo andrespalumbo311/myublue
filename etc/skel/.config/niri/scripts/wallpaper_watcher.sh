@@ -18,13 +18,14 @@ while true; do
             # Esportazione con priorità bassa per non rallentare il sistema
             nice -n 19 flatpak run com.github.xournalpp.xournalpp --create-img="$PNG_BASE" "$XOPP_FILE" >/dev/null 2>&1
             
-            # Gestione della rinomina se Xournal++ ha creato un file numerato
-            for file in "$HOME/Pictures/task_wallpaper_base-"*.png; do
-                if [ -f "$file" ]; then
-                    mv "$file" "$PNG_BASE" 2>/dev/null
-                    break
-                fi
-            done
+            # Gestione della rinomina per usare ESCLUSIVAMENTE la prima pagina
+            # (evita il bug di globbing dove -10.png viene prima di -1.png)
+            if [ -f "${PNG_BASE%.png}-1.png" ]; then
+                mv "${PNG_BASE%.png}-1.png" "$PNG_BASE" 2>/dev/null
+            fi
+            
+            # Pulizia file temporanei di eventuali altre pagine (es. -2.png, -3.png...)
+            rm -f "${PNG_BASE%.png}-"*.png
             
             # Applicazione wallpaper
             bash "$APPLY_SCRIPT"

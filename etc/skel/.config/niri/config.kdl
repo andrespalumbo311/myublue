@@ -30,18 +30,14 @@ input {
     // Omitting settings disables them, or leaves them at their default values.
     // All commented-out settings here are examples, not defaults.
     touchpad {
-        // off
         tap
-        // dwt
-        // dwtp
-        // drag false
-        // drag-lock
+        dwt
+        dwtp
         natural-scroll
-        accel-speed 0.7
+        accel-speed 0.2
         accel-profile "flat"
-        // scroll-method "two-finger"
-        // disabled-on-external-mouse
     }
+
 
     mouse {
         // off
@@ -75,8 +71,9 @@ input {
 
     // Focus windows and outputs automatically when moving the mouse into them.
     // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
-    // focus-follows-mouse max-scroll-amount="0%"
+    focus-follows-mouse max-scroll-amount="0%"
 }
+
 
 // You can configure outputs by their name, which you can find
 // by running `niri msg outputs` while inside a niri instance.
@@ -165,7 +162,7 @@ layout {
     // You can change how the focus ring looks.
     focus-ring {
         // Uncomment this line to disable the focus ring.
-        off
+        // off
 
         // How many logical pixels the ring extends out from the windows.
         width 4
@@ -342,6 +339,18 @@ window-rule {
     default-column-width { proportion 1.0; }
 }
 
+// Open ONLY the main Stata 19 window at 100% width.
+window-rule {
+    match app-id=r#"(?i)stata19"# title=r#"(?i)^statanow"#
+    default-column-width { proportion 1.0; }
+}
+
+// Ensure other Stata windows (Editor, etc.) open at default width (50%).
+window-rule {
+    match app-id=r#"(?i)stata19"#
+    exclude title=r#"(?i)^statanow"#
+}
+
 // Telegram: fixed width as it is currently open (380px)
 window-rule {
     match app-id=r#"^org\.telegram\.desktop$"#
@@ -402,6 +411,11 @@ binds {
     Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
     Mod+T hotkey-overlay-title="Edit Desktop Tasks" { spawn "/var/home/andres/.config/niri/scripts/edit_tasks.sh"; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "/var/home/andres/.local/bin/niri-lock.sh"; }
+
+    // Mouse bindings for moving and resizing columns
+    // Mod+MouseLeft  { move-column-with-mouse; }
+    // Mod+MouseRight { resize-column-with-mouse; }
+    Mod+MouseMiddle { toggle-window-floating; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
