@@ -1,6 +1,28 @@
 {
     "output": {
         "blocklist": [],
+        "filter#0": {
+            "balance": 0.0,
+            "bypass": false,
+            "frequency": 90.0,
+            "input-gain": 0.0,
+            "mode": "12dB/oct High Pass",
+            "output-gain": 0.0,
+            "resonance": -3.0,
+            "type": "Bell",
+            "wet": 0.0
+        },
+        "filter#1": {
+            "balance": 0.0,
+            "bypass": false,
+            "frequency": 180.0,
+            "input-gain": 0.0,
+            "mode": "12dB/oct Low Shelf",
+            "output-gain": 5.0,
+            "resonance": -3.0,
+            "type": "Bell",
+            "wet": 0.0
+        },
         "compressor#0": {
             "attack": 20.0,
             "boost-amount": 6.0,
@@ -16,7 +38,7 @@
             "makeup": 4.0,
             "mode": "Downward",
             "output-gain": 0.0,
-            "ratio": 2.5,
+            "ratio": 3.0,
             "release": 100.0,
             "release-threshold": -100.0,
             "sidechain": {
@@ -27,7 +49,7 @@
                 "source": "Middle",
                 "type": "Feed-forward"
             },
-            "threshold": -12.0,
+            "threshold": -15.0,
             "wet": 0.0
         },
         "limiter#0": {
@@ -35,14 +57,14 @@
             "alr-attack": 5.0,
             "alr-knee": 0.0,
             "alr-release": 50.0,
-            "attack": 10.0,
+            "attack": 5.0,
             "bypass": false,
             "input-gain": 2.0,
-            "lookahead": 10.0,
+            "lookahead": 5.0,
             "mode": "Herm Wide",
             "output-gain": 0.0,
-            "oversampling": "4X",
-            "release": 10.0,
+            "oversampling": "None",
+            "release": 5.0,
             "sidechain": {
                 "lookahead": 0.0,
                 "mode": "RMS",
@@ -52,10 +74,12 @@
                 "type": "Feed-forward"
             },
             "stealth": true,
-            "threshold": -3.0,
+            "threshold": -1.5,
             "wet": 0.0
         },
         "plugins_order": [
+            "filter#0",
+            "filter#1",
             "compressor#0",
             "limiter#0"
         ]
