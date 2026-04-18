@@ -1,0 +1,8 @@
+# Configurazione uupd per il servizio di sistema
+# Impedisce errori D-Bus e di permessi separando i compiti
+
+[flatpak]
+# Disabilita gli aggiornamenti Flatpak dell'utente per il servizio di sistema
+# Questi dovrebbero essere gestiti separatamente da un timer utente o manualmente
+user = false
+system = true
