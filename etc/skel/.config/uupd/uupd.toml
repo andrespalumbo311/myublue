@@ -1,0 +1,14 @@
+# Configurazione uupd per la SESSIONE UTENTE
+# Si occupa solo di ciò che appartiene all'utente (Flatpak --user, Brew, Distrobox)
+
+[flatpak]
+user = true
+system = false
+
+[brew]
+# Brew è quasi sempre gestito a livello utente
+enabled = true
+
+[distrobox]
+# Aggiorna i container dell'utente
+enabled = true

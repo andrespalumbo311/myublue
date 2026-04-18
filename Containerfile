@@ -33,6 +33,7 @@ RUN if id "greetd" &>/dev/null; then \
         usermod -aG video,render,tty greetd; \
     fi && \
     systemctl enable tailscaled.service greetd.service uupd.timer && \
+    systemctl --global enable uupd.timer && \
     systemctl disable rpm-ostreed-automatic.timer
 ### LINTING
 RUN bootc container lint
