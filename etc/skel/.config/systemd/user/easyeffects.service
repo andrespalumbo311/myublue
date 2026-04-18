@@ -1,0 +1,12 @@
+[Unit]
+Description=EasyEffects Daemon
+After=pipewire.service
+
+[Service]
+Type=dbus
+BusName=com.github.wwmm.easyeffects
+ExecStart=/usr/bin/easyeffects --gapplication-service --load-preset ThinkPad-X390
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
