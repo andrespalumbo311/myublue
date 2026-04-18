@@ -33,6 +33,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     greetd tuigreet fprintd fprintd-pam \
     brightnessctl grim slurp \
     pavucontrol cliphist kitty pamixer \
+    easyeffects lsp-plugins-pipewire \
     nautilus gvfs-mtp gvfs-smb && \
     dnf5 clean all
 

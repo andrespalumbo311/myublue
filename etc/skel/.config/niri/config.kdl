@@ -275,6 +275,7 @@ layout {
 
 // This line starts noctalia-shell via quickshell.
 spawn-at-startup "qs" "-c" "noctalia-shell"
+spawn-at-startup "easyeffects" "--gapplication-service"
 spawn-at-startup "/var/home/andres/.config/niri/scripts/auto-rotate.sh"
 spawn-at-startup "/var/home/andres/.config/niri/scripts/wallpaper_watcher.sh"
 spawn-at-startup "swayidle" "-w" \
