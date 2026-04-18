@@ -104,15 +104,15 @@ jobs:
             fi
           done < labels.txt
 
-          # Build in runner storage (no sudo)
-          buildah bud \
+          # Build directly in root storage (sudo)
+          sudo buildah bud \
             "${LABEL_ARGS[@]}" \
             --tag localhost/${{ env.IMAGE_NAME }}:latest \
             .
 
-          # Apply all tags from metadata
+          # Apply all tags from metadata with sudo
           for tag in ${{ steps.metadata.outputs.tags }}; do
-            podman tag localhost/${{ env.IMAGE_NAME }}:latest $tag
+            sudo podman tag localhost/${{ env.IMAGE_NAME }}:latest $tag
           done
 
       # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
