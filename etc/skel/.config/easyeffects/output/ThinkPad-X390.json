@@ -1,6 +1,28 @@
 {
     "output": {
         "blocklist": [],
+        "filter#0": {
+            "balance": 0.0,
+            "bypass": false,
+            "frequency": 150.0,
+            "input-gain": 0.0,
+            "mode": "12dB/oct High Pass",
+            "output-gain": 0.0,
+            "resonance": -3.0,
+            "type": "Bell",
+            "wet": 0.0
+        },
+        "filter#1": {
+            "balance": 0.0,
+            "bypass": false,
+            "frequency": 7000.0,
+            "input-gain": 0.0,
+            "mode": "12dB/oct Low Pass",
+            "output-gain": 0.0,
+            "resonance": -3.0,
+            "type": "Bell",
+            "wet": 0.0
+        },
         "compressor#0": {
             "attack": 20.0,
             "boost-amount": 6.0,
@@ -9,14 +31,14 @@
             "dry": -100.0,
             "hpf-frequency": 10.0,
             "hpf-mode": "off",
-            "input-gain": 3.0,
+            "input-gain": 0.0,
             "knee": -6.0,
             "lpf-frequency": 20000.0,
             "lpf-mode": "off",
-            "makeup": 0.0,
+            "makeup": 8.0,
             "mode": "Downward",
             "output-gain": 0.0,
-            "ratio": 4.0,
+            "ratio": 6.0,
             "release": 100.0,
             "release-threshold": -100.0,
             "sidechain": {
@@ -27,13 +49,13 @@
                 "source": "Middle",
                 "type": "Feed-forward"
             },
-            "threshold": -18.0,
+            "threshold": -24.0,
             "wet": 0.0
         },
         "limiter#0": {
             "attack": 5.0,
             "bypass": false,
-            "input-gain": 3.0,
+            "input-gain": 0.0,
             "lookahead": 5.0,
             "mode": "Herm Wide",
             "output-gain": 0.0,
@@ -48,10 +70,12 @@
                 "type": "Feed-forward"
             },
             "stealth": false,
-            "threshold": -1.5,
+            "threshold": -0.5,
             "wet": 0.0
         },
         "plugins_order": [
+            "filter#0",
+            "filter#1",
             "compressor#0",
             "limiter#0"
         ]
