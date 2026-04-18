@@ -94,22 +94,25 @@ jobs:
 
       - name: Build Image
         id: build_image
-        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
-        with:
-          containerfiles: |
-            ./Containerfile
-          # Postfix image name with -custom to make it a little more descriptive
-          # Syntax: https://docs.github.com/en/actions/learn-github-actions/expressions#format
-          image: localhost/${{ env.IMAGE_NAME }}
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
-          oci: false
-          layers: true
-
-      - name: Load Image into Rootful Podman
         run: |
+          # Convert multi-line labels to buildah --label format
+          echo "${{ steps.metadata.outputs.labels }}" > labels.txt
+          LABEL_ARGS=""
+          while IFS= read -r line; do
+            if [ -n "$line" ]; then
+              LABEL_ARGS="$LABEL_ARGS --label $line"
+            fi
+          done < labels.txt
+
+          # Build directly in root storage
+          sudo buildah bud \
+            $LABEL_ARGS \
+            --tag localhost/${{ env.IMAGE_NAME }}:latest \
+            .
+
+          # Apply all tags from metadata
           for tag in ${{ steps.metadata.outputs.tags }}; do
-            podman save localhost/${{ env.IMAGE_NAME }}:$tag | sudo podman load
+            sudo podman tag localhost/${{ env.IMAGE_NAME }}:latest $tag
           done
 
       # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
