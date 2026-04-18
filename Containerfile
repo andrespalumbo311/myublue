@@ -10,32 +10,28 @@ FROM ghcr.io/ublue-os/base-main:latest
 # Copia dei binari custom dallo stage di build (Ottimizzazione: nessun residuo di Cargo o build-deps)
 COPY --from=builder /tmp/cargo-build/bin/wl-clip-persist /usr/bin/wl-clip-persist
 
-# STRATO 1: Repository COPR (Sostituito Hyprland con Niri e Noctalia)
+# STRATO 1: Repository COPR e Installazione Pacchetti
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable yalter/niri && \
     dnf5 -y copr enable zhangyi6324/noctalia-shell && \
     dnf5 -y copr enable lilay/topgrade && \
-    dnf5 -y copr enable ublue-os/packages
-
-# STRATO 2: Utilità CLI e System Tooling
-RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
+    dnf5 -y copr enable ublue-os/packages && \
     dnf5 install -y \
     git cmake gcc gcc-c++ meson micro tailscale topgrade \
     inotify-tools powertop tlp tlp-rdw freerdp \
-    uupd
-
-# STRATO 3: Ambiente Grafico Niri + Noctalia + Utility (Nautilus aggiunto come file manager)
-RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
-    dnf5 install -y \
+    uupd \
     niri noctalia-shell fuzzel \
     greetd tuigreet fprintd fprintd-pam \
     brightnessctl grim slurp \
     pavucontrol cliphist kitty pamixer \
-    nautilus gvfs-mtp gvfs-smb
+    nautilus gvfs-mtp gvfs-smb && \
+    dnf5 clean all
 
-# STRATO 5: Configurazione servizi e finalizzazione
+# STRATO 2: Configurazione servizi e finalizzazione
 COPY etc /etc
-RUN usermod -aG video,render,tty greetd || true && \
+RUN if id "greetd" &>/dev/null; then \
+        usermod -aG video,render,tty greetd; \
+    fi && \
     systemctl enable tailscaled.service greetd.service uupd.timer && \
     systemctl disable rpm-ostreed-automatic.timer
 ### LINTING
