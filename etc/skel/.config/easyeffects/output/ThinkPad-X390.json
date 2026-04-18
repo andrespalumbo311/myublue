@@ -2,22 +2,22 @@
     "output": {
         "blocklist": [],
         "compressor#0": {
-            "attack": 20.0,
-            "boost-amount": 6.0,
+            "attack": 10.0,
+            "boost-amount": 4.0,
             "boost-threshold": -72.0,
             "bypass": false,
             "dry": -100.0,
-            "hpf-frequency": 10.0,
-            "hpf-mode": "off",
+            "hpf-frequency": 160.0,
+            "hpf-mode": "12dB/oct",
             "input-gain": 0.0,
             "knee": -6.0,
-            "lpf-frequency": 20000.0,
+            "lpf-frequency": 10000.0,
             "lpf-mode": "off",
             "makeup": 6.0,
             "mode": "Downward",
             "output-gain": 0.0,
             "ratio": 4.0,
-            "release": 100.0,
+            "release": 50.0,
             "release-threshold": -100.0,
             "sidechain": {
                 "lookahead": 0.0,
@@ -27,7 +27,7 @@
                 "source": "Middle",
                 "type": "Feed-forward"
             },
-            "threshold": -20.0,
+            "threshold": -15.0,
             "wet": 0.0
         },
         "limiter#0": {
@@ -37,7 +37,7 @@
             "alr-release": 50.0,
             "attack": 5.0,
             "bypass": false,
-            "input-gain": 2.0,
+            "input-gain": 4.0,
             "lookahead": 5.0,
             "mode": "Herm Wide",
             "output-gain": 0.0,
