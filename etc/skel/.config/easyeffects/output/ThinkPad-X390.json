@@ -2,22 +2,22 @@
     "output": {
         "blocklist": [],
         "compressor#0": {
-            "attack": 20.0,
+            "attack": 5.0,
             "boost-amount": 6.0,
             "boost-threshold": -72.0,
             "bypass": false,
             "dry": -100.0,
-            "hpf-frequency": 200.0,
+            "hpf-frequency": 160.0,
             "hpf-mode": "12dB/oct",
             "input-gain": 0.0,
-            "knee": -6.0,
-            "lpf-frequency": 20000.0,
-            "lpf-mode": "off",
-            "makeup": 8.0,
+            "knee": -12.0,
+            "lpf-frequency": 12000.0,
+            "lpf-mode": "12dB/oct",
+            "makeup": 4.0,
             "mode": "Downward",
             "output-gain": 0.0,
-            "ratio": 6.0,
-            "release": 100.0,
+            "ratio": 4.0,
+            "release": 50.0,
             "release-threshold": -100.0,
             "sidechain": {
                 "lookahead": 0.0,
@@ -27,7 +27,7 @@
                 "source": "Middle",
                 "type": "Feed-forward"
             },
-            "threshold": -24.0,
+            "threshold": -18.0,
             "wet": 0.0
         },
         "limiter#0": {
@@ -35,7 +35,7 @@
             "alr-attack": 5.0,
             "alr-knee": 0.0,
             "alr-release": 50.0,
-            "attack": 5.0,
+            "attack": 2.0,
             "bypass": false,
             "input-gain": 2.0,
             "lookahead": 5.0,
@@ -52,7 +52,7 @@
                 "type": "Feed-forward"
             },
             "stealth": false,
-            "threshold": -2.0,
+            "threshold": -3.0,
             "wet": 0.0
         },
         "plugins_order": [
