@@ -1,47 +1,40 @@
 {
     "output": {
         "blocklist": [],
-        "equalizer#0": {
+        "filter#0": {
             "balance": 0.0,
             "bypass": false,
+            "frequency": 10000.0,
             "input-gain": 0.0,
-            "left": {
-                "band#0": { "frequency": 125.0, "gain": 3.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#1": { "frequency": 250.0, "gain": 1.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#2": { "frequency": 500.0, "gain": 0.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#3": { "frequency": 1000.0, "gain": 0.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#4": { "frequency": 2000.0, "gain": 2.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#5": { "frequency": 4000.0, "gain": -4.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#6": { "frequency": 8000.0, "gain": -6.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#7": { "frequency": 16000.0, "gain": -8.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" }
-            },
+            "mode": "12dB/oct Low Pass",
             "output-gain": 0.0,
-            "pitch": 0.0,
-            "right": {
-                "band#0": { "frequency": 125.0, "gain": 3.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#1": { "frequency": 250.0, "gain": 1.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#2": { "frequency": 500.0, "gain": 0.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#3": { "frequency": 1000.0, "gain": 0.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#4": { "frequency": 2000.0, "gain": 2.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#5": { "frequency": 4000.0, "gain": -4.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#6": { "frequency": 8000.0, "gain": -6.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" },
-                "band#7": { "frequency": 16000.0, "gain": -8.0, "mode": "RLC (BT)", "mute": false, "q": 1.4, "type": "Bell" }
-            },
-            "split-channels": false
+            "resonance": -3.0,
+            "type": "Bell",
+            "wet": 0.0
         },
         "limiter#0": {
             "attack": 5.0,
             "bypass": false,
-            "input-gain": 5.0,
+            "input-gain": 6.0,
             "lookahead": 5.0,
             "mode": "Herm Wide",
             "output-gain": 0.0,
+            "oversampling": "None",
             "release": 5.0,
+            "sidechain": {
+                "lookahead": 0.0,
+                "mode": "RMS",
+                "preamp": 0.0,
+                "reactivity": 10.0,
+                "source": "Middle",
+                "type": "Feed-forward"
+            },
+            "stealth": false,
             "threshold": -1.0,
             "wet": 0.0
         },
         "plugins_order": [
-            "equalizer#0",
+            "filter#0",
             "limiter#0"
         ]
     }
