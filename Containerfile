@@ -34,7 +34,8 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     brightnessctl grim slurp \
     pavucontrol cliphist kitty pamixer \
     easyeffects lsp-plugins \
-    nautilus gvfs-mtp gvfs-smb && \
+    nautilus gvfs-mtp gvfs-smb \
+    xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
     dnf5 clean all
 
 # STRATO 4: Configurazione servizi e finalizzazione
