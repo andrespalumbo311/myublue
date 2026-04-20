@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Type=simple
 EnvironmentFile=-/etc/default/scx
-ExecStart=/bin/sh -c "exec /usr/bin/$${SCX_SCHEDULER:-scx_lavd} --kconfig \"$$(grep '=y' /lib/modules/$$(uname -r)/config | tr '\\n' ' ')\" "
+ExecStart=/bin/sh /etc/scx/scx-launcher.sh
 Restart=on-failure
 RestartSec=3
 

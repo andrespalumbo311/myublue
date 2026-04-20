@@ -24,7 +24,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     git cmake gcc gcc-c++ meson micro tailscale topgrade \
     inotify-tools powertop tlp tlp-rdw freerdp \
-    uupd scx-scheds ananicy-cpp && \
+    uupd scx-scheds scx-tools ananicy-cpp && \
     dnf5 clean all
 
 # STRATO 3: Ambiente Grafico e Utility (Cambiamenti più frequenti)
@@ -44,6 +44,7 @@ COPY etc /etc
 RUN if id "greetd" &>/dev/null; then \
         usermod -aG video,render,tty greetd; \
     fi && \
+    chmod +x /etc/scx/scx-launcher.sh && \
     systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service && \
     systemctl --global enable uupd.timer easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer bluetooth.service
