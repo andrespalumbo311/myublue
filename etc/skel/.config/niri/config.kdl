@@ -275,7 +275,8 @@ layout {
 
 // This line starts noctalia-shell via quickshell.
 spawn-at-startup "qs" "-c" "noctalia-shell"
-spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY"
+spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "DISPLAY"
+spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-gnome"
 spawn-at-startup "/var/home/andres/.config/niri/scripts/auto-rotate.sh"
 spawn-at-startup "/var/home/andres/.config/niri/scripts/wallpaper_watcher.sh"
 spawn-at-startup "swayidle" "-w" \
