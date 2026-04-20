@@ -16,6 +16,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable zhangyi6324/noctalia-shell && \
     dnf5 -y copr enable lilay/topgrade && \
     dnf5 -y copr enable ublue-os/packages && \
+    dnf5 -y copr enable bieszczaders/kernel-cachyos-addons && \
     dnf5 clean all
 
 # STRATO 2: Utilità CLI e System Tooling (Cambiamenti rari)
@@ -23,7 +24,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     git cmake gcc gcc-c++ meson micro tailscale topgrade \
     inotify-tools powertop tlp tlp-rdw freerdp \
-    uupd && \
+    uupd scx-scheds ananicy-cpp && \
     dnf5 clean all
 
 # STRATO 3: Ambiente Grafico e Utility (Cambiamenti più frequenti)
@@ -43,7 +44,7 @@ COPY etc /etc
 RUN if id "greetd" &>/dev/null; then \
         usermod -aG video,render,tty greetd; \
     fi && \
-    systemctl enable tailscaled.service greetd.service uupd.timer && \
+    systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service && \
     systemctl --global enable uupd.timer easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer bluetooth.service
 ### LINTING
