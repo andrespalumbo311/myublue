@@ -6,11 +6,9 @@ After=network.target
 [Service]
 Type=simple
 EnvironmentFile=-/etc/default/scx
-ExecStart=/bin/sh -c 'exec /usr/bin/${SCX_SCHEDULER:-scx_lavd}'
+ExecStart=/bin/sh -c "exec /usr/bin/$${SCX_SCHEDULER:-scx_lavd} --kconfig \"$$(grep '=y' /lib/modules/$$(uname -r)/config | tr '\\n' ' ')\" "
 Restart=on-failure
 RestartSec=3
-TemporaryFileSystem=/boot
-BindReadOnlyPaths=/lib/modules/%v/config:/boot/config-%v
 
 [Install]
 WantedBy=multi-user.target
