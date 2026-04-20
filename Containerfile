@@ -1,16 +1,33 @@
-# STAGE 1: Compilazione binari custom (wl-clip-persist)
-# Usiamo un multi-stage build per mantenere l'immagine finale pulita e massimizzare la cache.
+# STAGE 1: Compilazione binari custom (wl-clip-persist e sched-ext)
 FROM fedora:41 AS builder
-RUN dnf install -y cargo git wayland-devel && \
-    cargo install --git https://github.com/Linus789/wl-clip-persist.git --root /tmp/cargo-build
+
+# Installazione dipendenze per wl-clip-persist e scx
+RUN dnf install -y \
+    git cargo clang clang-devel llvm-devel \
+    libbpf-devel elfutils-libelf-devel zlib-devel \
+    make pkgconf wayland-devel bpftool meson
+
+# 1. Compilazione wl-clip-persist
+RUN cargo install --git https://github.com/Linus789/wl-clip-persist.git --root /tmp/cargo-build
+
+# 2. Compilazione scx (sched-ext) dal ramo main per supporto Kernel 6.19+
+RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
+    cd /tmp/scx && \
+    # Build degli scheduler in Rust (lavd, rusty, ecc.)
+    cargo build --release --package scx_lavd --package scx_rusty && \
+    mkdir -p /tmp/scx-build && \
+    cp target/release/scx_lavd /tmp/scx-build/ && \
+    cp target/release/scx_rusty /tmp/scx-build/
 
 # STAGE 2: Immagine Finale
 FROM ghcr.io/ublue-os/base-main:latest
 
-# Copia dei binari custom dallo stage di build (Ottimizzazione: nessun residuo di Cargo o build-deps)
+# Copia dei binari custom dallo stage di build
 COPY --from=builder /tmp/cargo-build/bin/wl-clip-persist /usr/bin/wl-clip-persist
+COPY --from=builder /tmp/scx-build/scx_lavd /usr/bin/scx_lavd
+COPY --from=builder /tmp/scx-build/scx_rusty /usr/bin/scx_rusty
 
-# STRATO 1: Repository COPR
+# STRATO 1: Repository COPR (Manteniamo per ananicy-cpp e altri tool)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable yalter/niri && \
     dnf5 -y copr enable zhangyi6324/noctalia-shell && \
@@ -19,15 +36,16 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable bieszczaders/kernel-cachyos-addons && \
     dnf5 clean all
 
-# STRATO 2: Utilità CLI e System Tooling (Cambiamenti rari)
+# STRATO 2: Utilità CLI e System Tooling
+# Nota: Rimosso scx-scheds perché ora li compiliamo noi
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     git cmake gcc gcc-c++ meson micro tailscale topgrade \
     inotify-tools powertop tlp tlp-rdw freerdp \
-    uupd scx-scheds scx-tools ananicy-cpp && \
+    uupd ananicy-cpp scx-tools && \
     dnf5 clean all
 
-# STRATO 3: Ambiente Grafico e Utility (Cambiamenti più frequenti)
+# STRATO 3: Ambiente Grafico e Utility
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri noctalia-shell fuzzel \
@@ -48,5 +66,6 @@ RUN if id "greetd" &>/dev/null; then \
     systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service && \
     systemctl --global enable uupd.timer easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer bluetooth.service
+
 ### LINTING
 RUN bootc container lint
