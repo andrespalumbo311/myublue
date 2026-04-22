@@ -46,11 +46,12 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     uupd ananicy-cpp scx-tools && \
     dnf5 clean all
 
-# STRATO 3: Ambiente Grafico (Base)
+# STRATO 3: Ambiente Grafico (Base) e Font di sistema
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri noctalia-shell fuzzel \
-    greetd tuigreet fprintd fprintd-pam && \
+    greetd tuigreet fprintd fprintd-pam \
+    dejavu-sans-fonts glibc-all-langpacks && \
     dnf5 clean all
 
 # STRATO 4: Multimedia e Utility Desktop
@@ -63,8 +64,9 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
     dnf5 clean all
 
-# STRATO 5: Helium Browser (Isolato per stabilità e per gestire il symlink /opt)
-RUN rm -f /opt && mkdir -p /opt && \
+# STRATO 5: Helium Browser (Configurazione corretta del percorso risorse /opt)
+RUN mkdir -p /var/opt && \
+    ln -sf /var/opt/helium /opt/helium && \
     dnf5 install -y helium-bin && \
     dnf5 clean all
 
