@@ -1,5 +1,5 @@
 # STAGE 1: Compilazione binari custom (wl-clip-persist e sched-ext)
-FROM fedora:41 AS builder
+FROM ghcr.io/ublue-os/base-main:latest AS builder
 
 # Installazione dipendenze per wl-clip-persist e scx
 RUN dnf install -y \
