@@ -46,12 +46,11 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     uupd ananicy-cpp scx-tools && \
     dnf5 clean all
 
-# STRATO 3: Ambiente Grafico (Base) e Font/Langpacks di sistema
+# STRATO 3: Ambiente Grafico (Base)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri noctalia-shell fuzzel \
-    greetd tuigreet fprintd fprintd-pam \
-    dejavu-sans-fonts glibc-all-langpacks && \
+    greetd tuigreet fprintd fprintd-pam && \
     dnf5 clean all
 
 # STRATO 4: Multimedia e Utility Desktop
