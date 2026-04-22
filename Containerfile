@@ -63,8 +63,8 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
     dnf5 clean all
 
-# STRATO 5: Helium Browser (Isolato per stabilità)
-RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
+# STRATO 5: Helium Browser (Isolato per stabilità e per gestire il symlink /opt)
+RUN rm -f /opt && mkdir -p /opt && \
     dnf5 install -y helium-bin && \
     dnf5 clean all
 
