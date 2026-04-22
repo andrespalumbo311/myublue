@@ -46,13 +46,12 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     uupd ananicy-cpp scx-tools && \
     dnf5 clean all
 
-# STRATO 3: Ambiente Grafico (Base) e Font di sistema
+# STRATO 3: Ambiente Grafico (Base) e Font
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri noctalia-shell fuzzel \
-    greetd tuigreet fprintd fprintd-pam \
-    google-noto-sans-fonts google-noto-serif-fonts google-noto-color-emoji-fonts \
-    liberation-fonts liberation-sans-fonts liberation-serif-fonts liberation-mono-fonts && \
+    adwaita-sans-fonts adwaita-serif-fonts \
+    greetd tuigreet fprintd fprintd-pam && \
     dnf5 clean all
 
 # STRATO 4: Multimedia e Utility Desktop
