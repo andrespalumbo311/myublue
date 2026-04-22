@@ -1,0 +1,21 @@
+{
+    "checks": {
+        "hardware": {
+            "enable": false
+        }
+    },
+    "modules": {
+        "system": {
+            "disable": false
+        },
+        "flatpak": {
+            "disable": true
+        },
+        "brew": {
+            "disable": true
+        },
+        "distrobox": {
+            "disable": true
+        }
+    }
+}
