@@ -61,6 +61,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     pavucontrol cliphist kitty pamixer \
     easyeffects lsp-plugins \
     nautilus gvfs-mtp gvfs-smb \
+    gnome-keyring \
     xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
     dnf5 clean all
 
