@@ -34,6 +34,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable lilay/topgrade && \
     dnf5 -y copr enable ublue-os/packages && \
     dnf5 -y copr enable bieszczaders/kernel-cachyos-addons && \
+    dnf5 -y copr enable imput/helium && \
     dnf5 clean all
 
 # STRATO 2: Utilità CLI e System Tooling
@@ -49,6 +50,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri noctalia-shell fuzzel \
+    helium-bin \
     greetd tuigreet fprintd fprintd-pam \
     brightnessctl grim slurp \
     pavucontrol cliphist kitty pamixer \
