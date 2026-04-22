@@ -65,9 +65,11 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
     dnf5 clean all
 
-# STRATO 5: Helium Browser (Metodo forzato per successo installazione)
-RUN rm -rf /opt && mkdir -p /opt && \
-    dnf5 install -y helium-bin && \
+# STRATO 5: Helium Browser (Spostamento in /usr/lib per persistenza su sistemi Atomic)
+RUN dnf5 install -y helium-bin && \
+    mkdir -p /usr/lib/helium && \
+    cp -r /opt/helium/* /usr/lib/helium/ && \
+    rm -rf /opt/helium && \
     dnf5 clean all
 
 # STRATO 6: Configurazione servizi e finalizzazione
