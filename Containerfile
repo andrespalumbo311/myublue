@@ -2,6 +2,7 @@
 FROM ghcr.io/ublue-os/base-main:latest AS builder
 
 # Installazione dipendenze per wl-clip-persist e scx
+ENV CARGO_HOME=/tmp/cargo
 RUN dnf install -y \
     git cargo clang clang-devel llvm-devel \
     libbpf-devel elfutils-libelf-devel zlib-devel \
