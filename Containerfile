@@ -65,16 +65,6 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
     dnf5 clean all
 
-# STRATO 5: Helium Browser (Spostamento e correzione wrapper per sistemi Atomic)
-RUN rm -rf /opt && mkdir -p /opt && \
-    dnf5 install -y helium-bin && \
-    mkdir -p /usr/lib/helium && \
-    cp -r /opt/helium/* /usr/lib/helium/ && \
-    sed -i 's|HERE=.*|HERE="/opt/helium"|' /usr/lib/helium/helium-wrapper && \
-    rm -rf /opt && \
-    ln -s /var/opt /opt && \
-    dnf5 clean all
-
 # STRATO 6: Configurazione servizi e finalizzazione
 COPY etc /etc
 RUN if id "greetd" &>/dev/null; then \
@@ -84,6 +74,19 @@ RUN if id "greetd" &>/dev/null; then \
     systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service && \
     systemctl --global enable easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer bluetooth.service
+
+### LINTING
+RUN bootc container lint
+o,render,tty greetd; \
+    fi && \
+    chmod +x /etc/scx/scx-launcher.sh && \
+    systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service && \
+    systemctl --global enable easyeffects.service && \
+    systemctl disable rpm-ostreed-automatic.timer bluetooth.service
+
+### LINTING
+RUN bootc container lint
+mer
 
 ### LINTING
 RUN bootc container lint
