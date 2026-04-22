@@ -65,11 +65,12 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
     dnf5 clean all
 
-# STRATO 5: Helium Browser (Installazione forzata e spostamento in /usr/lib)
+# STRATO 5: Helium Browser (Spostamento e correzione wrapper per sistemi Atomic)
 RUN rm -rf /opt && mkdir -p /opt && \
     dnf5 install -y helium-bin && \
     mkdir -p /usr/lib/helium && \
-    mv /opt/helium/* /usr/lib/helium/ && \
+    cp -r /opt/helium/* /usr/lib/helium/ && \
+    sed -i 's|HERE=.*|HERE="/opt/helium"|' /usr/lib/helium/helium-wrapper && \
     rm -rf /opt && \
     ln -s /var/opt /opt && \
     dnf5 clean all
