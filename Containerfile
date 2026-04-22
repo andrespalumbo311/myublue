@@ -28,7 +28,7 @@ COPY --from=builder /tmp/cargo-build/bin/wl-clip-persist /usr/bin/wl-clip-persis
 COPY --from=builder /tmp/scx-build/scx_lavd /usr/bin/scx_lavd
 COPY --from=builder /tmp/scx-build/scx_rusty /usr/bin/scx_rusty
 
-# STRATO 1: Repository COPR (Manteniamo per ananicy-cpp e altri tool)
+# STRATO 1: Repository COPR
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable yalter/niri && \
     dnf5 -y copr enable zhangyi6324/noctalia-shell && \
@@ -39,7 +39,6 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 clean all
 
 # STRATO 2: Utilità CLI e System Tooling
-# Nota: Rimosso scx-scheds perché ora li compiliamo noi
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     git cmake gcc gcc-c++ meson micro tailscale topgrade \
@@ -47,12 +46,16 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     uupd ananicy-cpp scx-tools && \
     dnf5 clean all
 
-# STRATO 3: Ambiente Grafico e Utility
+# STRATO 3: Ambiente Grafico (Base)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri noctalia-shell fuzzel \
-    helium-bin \
-    greetd tuigreet fprintd fprintd-pam \
+    greetd tuigreet fprintd fprintd-pam && \
+    dnf5 clean all
+
+# STRATO 4: Multimedia e Utility Desktop
+RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
+    dnf5 install -y \
     brightnessctl grim slurp \
     pavucontrol cliphist kitty pamixer \
     easyeffects lsp-plugins \
@@ -60,7 +63,12 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
     dnf5 clean all
 
-# STRATO 4: Configurazione servizi e finalizzazione
+# STRATO 5: Helium Browser (Isolato per stabilità)
+RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
+    dnf5 install -y helium-bin && \
+    dnf5 clean all
+
+# STRATO 6: Configurazione servizi e finalizzazione
 COPY etc /etc
 RUN if id "greetd" &>/dev/null; then \
         usermod -aG video,render,tty greetd; \
