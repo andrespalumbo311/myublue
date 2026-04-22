@@ -64,7 +64,7 @@ RUN if id "greetd" &>/dev/null; then \
     fi && \
     chmod +x /etc/scx/scx-launcher.sh && \
     systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service && \
-    systemctl --global enable uupd.timer easyeffects.service && \
+    systemctl --global enable easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer bluetooth.service
 
 ### LINTING
