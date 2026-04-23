@@ -30,7 +30,7 @@ COPY --from=builder /tmp/scx-build/scx_rusty /usr/bin/scx_rusty
 # STRATO 1: Repository COPR (Manteniamo per ananicy-cpp e altri tool)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable yalter/niri && \
-    dnf5 -y copr enable zhangyi6324/noctalia-shell && \
+    dnf5 -y copr enable avengemedia/dms && \
     dnf5 -y copr enable lilay/topgrade && \
     dnf5 -y copr enable ublue-os/packages && \
     dnf5 -y copr enable bieszczaders/kernel-cachyos-addons && \
@@ -47,10 +47,10 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 # STRATO 3: Ambiente Grafico e Utility
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
-    niri noctalia-shell fuzzel \
+    niri dms dms-greeter \
     greetd tuigreet fprintd fprintd-pam \
     brightnessctl grim slurp \
-    pavucontrol cliphist kitty pamixer \
+    pavucontrol kitty pamixer \
     easyeffects lsp-plugins \
     nautilus gvfs-mtp gvfs-smb \
     gnome-keyring \

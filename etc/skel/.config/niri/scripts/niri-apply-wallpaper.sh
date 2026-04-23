@@ -30,22 +30,5 @@ else
 fi
 mv -f "${WALLPAPER_FILE}.tmp" "$WALLPAPER_FILE"
 
-# Manage Swaybg lifecycle globally without race conditions
-FALLBACK_PID=$(pgrep -f 'swaybg -c #20B2AA' | head -n 1)
-if [ -z "$FALLBACK_PID" ]; then
-    swaybg -c "#20B2AA" &
-    FALLBACK_PID=$!
-fi
-
-swaybg -i "$WALLPAPER_FILE" -m fill &
-NEW_PID=$!
-
-sleep 0.5
-
-if kill -0 $NEW_PID 2>/dev/null; then
-    for pid in $(pgrep swaybg); do
-        if [ "$pid" != "$NEW_PID" ] && [ "$pid" != "$FALLBACK_PID" ]; then
-            kill -9 "$pid"
-        fi
-    done
-fi
+# Apply wallpaper using DankMaterialShell
+dms ipc call wallpaper set "$WALLPAPER_FILE"

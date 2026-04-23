@@ -273,12 +273,10 @@ layout {
 // which may be more convenient to use.
 // See the binds section below for more spawn examples.
 
-// This line starts noctalia-shell via quickshell.
-spawn-at-startup "qs" "-c" "noctalia-shell"
+// This line starts DankMaterialShell (DMS).
+spawn-at-startup "dms"
 spawn-at-startup "/var/home/andres/.config/niri/scripts/auto-rotate.sh"
 spawn-at-startup "/var/home/andres/.config/niri/scripts/wallpaper_watcher.sh"
-spawn-at-startup "swayidle" "-w" \
-    "before-sleep" "/var/home/andres/.local/bin/niri-lock.sh"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -408,9 +406,9 @@ binds {
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
-    Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
+    Mod+Space hotkey-overlay-title="Run an Application: DMS Launcher" { spawn "dms" "ipc" "call" "launcher" "toggle"; }
     Mod+T hotkey-overlay-title="Edit Desktop Tasks" { spawn "/var/home/andres/.config/niri/scripts/edit_tasks.sh"; }
-    Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "/var/home/andres/.local/bin/niri-lock.sh"; }
+    Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "dms" "ipc" "call" "session" "lock"; }
 
     // Mouse bindings for moving and resizing columns
     // Mod+MouseLeft  { move-column-with-mouse; }
@@ -614,7 +612,7 @@ binds {
     // Makes the column "fill the rest of the space".
     Mod+Ctrl+F { expand-column-to-available-width; }
 
-    Mod+C hotkey-overlay-title="Clipboard history" { spawn-sh "cliphist list | fuzzel -d | cliphist decode | wl-copy"; }
+    Mod+C hotkey-overlay-title="Clipboard history" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
 
     // Center all fully visible columns on screen.
     Mod+Ctrl+C { center-visible-columns; }
