@@ -21,6 +21,9 @@ case "$TRANSFORM" in
     *)     ROTATE="0" ;;
 esac
 
+# Generiamo un nome di file univoco per bypassare la cache di DMS
+WALLPAPER_FINAL="$HOME/Pictures/task_wallpaper_rendered_$(date +%s).png"
+
 # Perform rotation (host-native ImageMagick conversion)
 if [ "$ROTATE" = "0" ]; then
     cp -f "$WALLPAPER_BASE" "${WALLPAPER_FILE}.tmp"
@@ -28,7 +31,12 @@ else
     # Distrobox host exec might be needed depending on the system, but since niri spawned this:
     convert "$WALLPAPER_BASE" -rotate "$ROTATE" -define png:color-type=6 "${WALLPAPER_FILE}.tmp"
 fi
-mv -f "${WALLPAPER_FILE}.tmp" "$WALLPAPER_FILE"
+
+# Puliamo i vecchi sfondi renderizzati per evitare di accumularli
+rm -f "$HOME/Pictures/task_wallpaper_rendered_"*.png
+
+# Rinominiamo il temporaneo col nuovo nome univoco
+mv -f "${WALLPAPER_FILE}.tmp" "$WALLPAPER_FINAL"
 
 # Apply wallpaper using DankMaterialShell
-dms ipc call wallpaper set "$WALLPAPER_FILE"
+dms ipc call wallpaper set "$WALLPAPER_FINAL"

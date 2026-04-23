@@ -1,0 +1,14 @@
+[Unit]
+Description=Power off Bluetooth at boot gracefully
+After=bluetooth.service
+Requires=bluetooth.service
+
+[Service]
+Type=oneshot
+# A small delay to ensure the DBus interface of BlueZ is fully initialized
+ExecStartPre=/usr/bin/sleep 2
+ExecStart=/usr/bin/bluetoothctl power off
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
