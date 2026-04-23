@@ -50,6 +50,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     easyeffects lsp-plugins \
     nautilus gvfs-mtp gvfs-smb \
     gnome-keyring \
+    cups-pk-helper kimageformats khal \
     xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
     dnf5 remove -y swaybg swaylock swayidle cliphist fuzzel mako dunst || true && \
     dnf5 clean all

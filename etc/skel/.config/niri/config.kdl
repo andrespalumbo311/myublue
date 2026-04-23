@@ -274,7 +274,7 @@ layout {
 // See the binds section below for more spawn examples.
 
 // This line starts DankMaterialShell (DMS).
-spawn-at-startup "dms"
+spawn-at-startup "dms" "run"
 spawn-at-startup "/var/home/andres/.config/niri/scripts/auto-rotate.sh"
 spawn-at-startup "/var/home/andres/.config/niri/scripts/wallpaper_watcher.sh"
 
