@@ -1,0 +1,16 @@
+[Unit]
+Description=Install Helium Flatpak from pre-downloaded bundle
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Check if the flatpak is already installed; if not, install the bundle
+ExecStartPre=/usr/bin/sh -c 'if ! flatpak info com.github.ShyVortex.Helium >/dev/null 2>&1; then exit 0; else exit 1; fi'
+ExecStart=/usr/bin/flatpak install --system -y /usr/share/helium/helium.flatpak
+# Optional: clean up the bundle after installation to save space in the persistent /var if needed
+# ExecStartPost=/usr/bin/rm -f /usr/share/helium/helium.flatpak
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
