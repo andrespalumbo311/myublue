@@ -1,16 +1,13 @@
 # STAGE 1: Compilazione binari custom (wl-clip-persist e sched-ext)
 FROM fedora:41 AS builder
 
-# Installazione dipendenze per wl-clip-persist e scx
+# Installazione dipendenze per scx
 RUN dnf install -y \
     git cargo clang clang-devel llvm-devel \
     libbpf-devel elfutils-libelf-devel zlib-devel \
-    make pkgconf wayland-devel bpftool meson
+    make pkgconf bpftool meson
 
-# 1. Compilazione wl-clip-persist
-RUN cargo install --git https://github.com/Linus789/wl-clip-persist.git --root /tmp/cargo-build
-
-# 2. Compilazione scx (sched-ext) dal ramo main per supporto Kernel 6.19+
+# Compilazione scx (sched-ext) dal ramo main per supporto Kernel 6.19+
 RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
     cd /tmp/scx && \
     # Build degli scheduler in Rust (lavd, rusty, ecc.)
@@ -23,7 +20,6 @@ RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
 FROM ghcr.io/ublue-os/base-main:latest
 
 # Copia dei binari custom dallo stage di build
-COPY --from=builder /tmp/cargo-build/bin/wl-clip-persist /usr/bin/wl-clip-persist
 COPY --from=builder /tmp/scx-build/scx_lavd /usr/bin/scx_lavd
 COPY --from=builder /tmp/scx-build/scx_rusty /usr/bin/scx_rusty
 
@@ -55,6 +51,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     nautilus gvfs-mtp gvfs-smb \
     gnome-keyring \
     xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
+    dnf5 remove -y swaybg swaylock swayidle cliphist fuzzel mako dunst || true && \
     dnf5 clean all
 
 # STRATO 4: Configurazione servizi e finalizzazione
