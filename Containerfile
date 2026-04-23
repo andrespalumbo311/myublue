@@ -59,6 +59,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 
 # STRATO 4: Configurazione servizi e finalizzazione
 COPY etc /etc
+COPY usr /usr
 RUN if id "greetd" &>/dev/null; then \
         usermod -aG video,render,tty greetd; \
     fi && \
