@@ -37,7 +37,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     git cmake gcc gcc-c++ meson micro tailscale topgrade \
     inotify-tools powertop tlp tlp-rdw freerdp \
-    uupd ananicy-cpp scx-tools && \
+    uupd ananicy-cpp scx-tools matugen && \
     dnf5 clean all
 
 # STRATO 3: Ambiente Grafico e Utility
@@ -50,7 +50,8 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     easyeffects lsp-plugins \
     nautilus gvfs-mtp gvfs-smb \
     gnome-keyring \
-    cups-pk-helper kf6-kimageformats khal \
+    cups-pk-helper kf6-kimageformats qt6-qtimageformats ImageMagick khal \
+    accountsservice \
     xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
     dnf5 remove -y swaybg swaylock swayidle cliphist fuzzel mako dunst || true && \
     dnf5 clean all
