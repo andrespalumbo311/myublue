@@ -70,7 +70,12 @@ RUN if id "greetd" &>/dev/null; then \
     systemctl --global enable easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer
 
-# STRATO 5: Helium Flatpak (Pre-download latest x86_64 bundle)
+# STRATO 5: Inizializzazione Flatpak e Valent
+RUN flatpak remote-delete valent || true && \
+    flatpak remote-add --if-not-exists --system valent https://valent.andyholmes.ca/repo/ && \
+    flatpak update --appstream valent
+
+# STRATO 6: Helium Flatpak (Pre-download latest x86_64 bundle)
 RUN mkdir -p /usr/share/helium && \
     HELIUM_URL=$(curl -s https://api.github.com/repos/ShyVortex/helium-flatpak/releases/latest | jq -r '.assets[] | select(.name | contains("x86_64")) | .browser_download_url') && \
     curl -L -o /usr/share/helium/helium.flatpak "$HELIUM_URL"
