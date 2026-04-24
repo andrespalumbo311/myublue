@@ -8,17 +8,16 @@ Type=oneshot
 # Check if the flatpak is already installed; install if missing
 ExecStartPre=/usr/bin/sh -c 'if ! flatpak info net.imput.helium >/dev/null 2>&1; then exit 0; else exit 0; fi'
 ExecStart=/usr/bin/flatpak install --system -y /usr/share/helium/helium.flatpak
-# Imposta Helium come browser predefinito per tutti gli utenti esistenti
+# Imposta Helium come opzione disponibile (ma non forzata come predefinita)
 ExecStartPost=/usr/bin/bash -c 'for user_home in /var/home/*; do \
     if [ -d "$user_home" ]; then \
         MIME_FILE="$user_home/.config/mimeapps.list"; \
         mkdir -p "$(dirname "$MIME_FILE")"; \
         if [ ! -f "$MIME_FILE" ]; then echo "[Default Applications]" > "$MIME_FILE"; fi; \
-        sed -i "/text\/html=/d" "$MIME_FILE"; \
-        sed -i "/x-scheme-handler\/http=/d" "$MIME_FILE"; \
-        sed -i "/x-scheme-handler\/https=/d" "$MIME_FILE"; \
-        sed -i "/\[Default Applications\]/a text/html=net.imput.helium.desktop\\nx-scheme-handler/http=net.imput.helium.desktop\\nx-scheme-handler/https=net.imput.helium.desktop" "$MIME_FILE"; \
-        chown $(basename "$user_home"):$(basename "$user_home") "$MIME_FILE"; \
+        if ! grep -q "\[Added Associations\]" "$MIME_FILE"; then echo "[Added Associations]" >> "$MIME_FILE"; fi; \
+        if ! grep -q "net.imput.helium.desktop" "$MIME_FILE"; then \
+            sed -i "/\[Added Associations\]/a text/html=net.imput.helium.desktop;x-scheme-handler/http=net.imput.helium.desktop;x-scheme-handler/https=net.imput.helium.desktop;" "$MIME_FILE"; \
+        fi; \
         rm -f "$user_home/.local/share/applications/net.imput.helium.desktop"; \
     fi; \
 done'
