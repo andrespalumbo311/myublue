@@ -12,7 +12,8 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | :--- | :--- | :--- |
 | **Vital Directory Removal** | Deleting the last file in a directory (like `usr/` or `etc/`) causes it to vanish from Git, breaking `COPY` commands in the Containerfile. | If a directory must remain in the repo but is empty, always add a `.keep` file. |
 | **Non-existent Packages** | Attempting to install packages in the Containerfile using incorrect names or packages not present in Fedora repos. | **Before** adding a package to the Containerfile, verify its existence using `dnf search` or official Fedora repository search tools. |
-| **Browser Identity Mismatch** | Helium browser could not set itself as default because it looked for a specific `.desktop` filename not present in the sandbox. | Do not create duplicates in `/usr/share/applications`. Use `tmpfiles.d` to create symlinks pointing from expected names to Flatpak-exported files. |
+| **Browser Identity Mismatch** | Helium could not set itself as default due to an ID mismatch (`net.imput.helium` vs `com.github.ShyVortex.Helium`). | Always verify the actual Flatpak ID using `flatpak list` before creating symlinks or desktop entries. |
+| **Broken URL in Containerfile** | Using an incorrect/non-existent URL for a repository (e.g., Valent Flatpak repo) causes the build to fail at the `RUN` step. | **Always** verify URLs (especially for third-party repos) using `curl -I` or a browser before adding them to the build process. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:

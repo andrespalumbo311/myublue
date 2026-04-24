@@ -68,7 +68,7 @@ RUN if id "greetd" &>/dev/null; then \
     systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service bluetooth.service bluetooth-poweroff.service helium-setup.service && \
     systemctl --global enable easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer && \
-    flatpak remote-add --if-not-exists --system valent https://valent.andyholmes.ca/flatpak/valent.flatpakrepo
+    flatpak remote-add --if-not-exists --system valent https://valent.andyholmes.ca/valent.flatpakrepo
 
 # STRATO 5: Helium Flatpak (Pre-download latest x86_64 bundle)
 RUN mkdir -p /usr/share/helium && \
