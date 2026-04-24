@@ -1,2 +1,7 @@
 [Default Applications]
 inode/directory=org.gnome.Nautilus.desktop
+text/html=net.imput.helium.desktop
+x-scheme-handler/http=net.imput.helium.desktop
+x-scheme-handler/https=net.imput.helium.desktop
+x-scheme-handler/about=net.imput.helium.desktop
+x-scheme-handler/unknown=net.imput.helium.desktop
