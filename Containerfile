@@ -69,7 +69,7 @@ RUN if id "greetd" &>/dev/null; then \
     chmod +x /etc/scx/scx-launcher.sh && \
     dconf update && \
     systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service bluetooth.service bluetooth-poweroff.service helium-setup.service && \
-    systemctl --global enable easyeffects.service && \
+    systemctl --global enable easyeffects.service gnome-remote-desktop.service && \
     systemctl disable rpm-ostreed-automatic.timer
 
 # STRATO 5: Inizializzazione Flatpak e Valent
