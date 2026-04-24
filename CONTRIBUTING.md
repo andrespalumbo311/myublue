@@ -4,7 +4,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 
 ## Mandatory Operational Rules
 1. **Verify Documentation:** Before taking any action, read this file and the "Historical Errors & Prevention" table.
-2. **Self-Update:** If you commit an error that causes a build failure, after applying the fix, you **must** update the table in this file with the error description and how to avoid it in the future.
+2. **Self-Update:** If you commit an error (whether it causes a build failure or a runtime issue), after applying the fix, you **must** update the table in this file with the error description and how to avoid it in the future.
 
 ## Historical Errors & Prevention
 
@@ -15,6 +15,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **Browser Identity Mismatch** | Helium could not set itself as default due to an ID mismatch (`net.imput.helium` vs `com.github.ShyVortex.Helium`). | Always verify the actual Flatpak ID using `flatpak list` before creating symlinks or desktop entries. |
 | **Non-persistent Flatpak Remote** | Using `flatpak remote-add` in the Containerfile doesn't persist in the final image. | Use the file-based approach by adding a `.flatpakrepo` file to `etc/flatpak/remotes.d/` instead. |
 | **Broken URL in Containerfile** | Using an incorrect/non-existent URL for a repository (e.g., Valent Flatpak repo) causes the build to fail at the `RUN` step. | **Always** verify URLs (especially for third-party repos) using `curl -I` or a browser before adding them to the build process. |
+| **GPG Verification Error** | Providing a corrupted or incomplete GPG key and incorrect repository URL in a `.flatpakrepo` file prevents remote synchronization. | **Always** fetch the raw `.flatpakrepo` content from the source to ensure the GPG key and URL are correct. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
