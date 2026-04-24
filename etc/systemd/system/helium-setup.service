@@ -18,7 +18,8 @@ ExecStartPost=/usr/bin/bash -c 'for user_home in /var/home/*; do \
         if ! grep -q "net.imput.helium.desktop" "$MIME_FILE"; then \
             sed -i "/\[Added Associations\]/a text/html=net.imput.helium.desktop;x-scheme-handler/http=net.imput.helium.desktop;x-scheme-handler/https=net.imput.helium.desktop;" "$MIME_FILE"; \
         fi; \
-        rm -f "$user_home/.local/share/applications/net.imput.helium.desktop"; \
+        ln -sf /var/lib/flatpak/exports/share/applications/net.imput.helium.desktop "$user_home/.local/share/applications/helium.desktop"; \
+        chown $(basename "$user_home"):$(basename "$user_home") "$user_home/.local/share/applications/helium.desktop"; \
     fi; \
 done'
 # Optional: clean up the bundle after installation to save space in the persistent /var if needed
