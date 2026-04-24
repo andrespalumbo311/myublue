@@ -12,7 +12,7 @@ ExecStart=/usr/bin/flatpak install --system -y /usr/share/helium/helium.flatpak
 ExecStartPost=/usr/bin/bash -c 'for user_home in /var/home/*; do \
     if [ -d "$user_home" ]; then \
         mkdir -p "$user_home/.local/share/applications"; \
-        ln -sf /var/lib/flatpak/exports/share/applications/net.imput.helium.desktop "$user_home/.local/share/applications/helium.desktop"; \
+        ln -sf /var/lib/flatpak/exports/share/applications/net.imput.helium.desktop "$user_home/.local/share/applications/net.imput.helium.desktop"; \
         chown -R $(basename "$user_home"):$(basename "$user_home") "$user_home/.local/share/applications"; \
     fi; \
 done'
