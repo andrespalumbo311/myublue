@@ -19,6 +19,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **Plugin Dependency Resolution** | Software plugins often depend on low-level CLI utilities that are not included in minimal base images. | Audit plugin source code or documentation to identify and explicitly install all required system-level CLI dependencies in the build manifest. |
 | **Configuration Include Integrity** | Modular configuration files (e.g., KDL, YAML) that use `include` statements will fail to load if any referenced path is missing. | Ensure all included configuration fragments exist in the repository, using empty placeholder files if necessary to maintain structural integrity. |
 | **Atomic System GPG Keyring Constraints** | Initializing a remote via URL during build may fail if the GPG key is not yet trusted by the transient build-time keyring. | Point the initialization command to a local `.flatpakrepo` file that already contains the GPG key to ensure atomic import and trust. |
+| **Missing Remote Desktop Backend** | Remote mouse/keyboard input from apps (like Valent) fails on Wayland/Niri if the `gnome-remote-desktop` backend is not installed, even if portals are configured. | **Always** install the required portal backends (e.g., `gnome-remote-desktop`) and grant `org.freedesktop.portal.RemoteDesktop` permissions to the Flatpak. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
