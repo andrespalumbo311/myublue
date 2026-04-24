@@ -67,6 +67,7 @@ RUN if id "greetd" &>/dev/null; then \
         usermod -aG video,render,tty greetd; \
     fi && \
     chmod +x /etc/scx/scx-launcher.sh && \
+    dconf update && \
     systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service bluetooth.service bluetooth-poweroff.service helium-setup.service && \
     systemctl --global enable easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer
