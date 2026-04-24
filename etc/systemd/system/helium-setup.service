@@ -5,15 +5,21 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-# Check if the flatpak is already installed; if not, install the bundle
-ExecStartPre=/usr/bin/sh -c 'if ! flatpak info net.imput.helium >/dev/null 2>&1; then exit 0; else exit 1; fi'
+# Check if the flatpak is already installed; install if missing
+ExecStartPre=/usr/bin/sh -c 'if ! flatpak info net.imput.helium >/dev/null 2>&1; then exit 0; else exit 0; fi'
 ExecStart=/usr/bin/flatpak install --system -y /usr/share/helium/helium.flatpak
-# Crea il link simbolico per ogni utente esistente per permettere a Helium (sandbox) di trovarsi
+# Imposta Helium come browser predefinito per tutti gli utenti esistenti
 ExecStartPost=/usr/bin/bash -c 'for user_home in /var/home/*; do \
     if [ -d "$user_home" ]; then \
-        mkdir -p "$user_home/.local/share/applications"; \
-        ln -sf /var/lib/flatpak/exports/share/applications/net.imput.helium.desktop "$user_home/.local/share/applications/net.imput.helium.desktop"; \
-        chown -R $(basename "$user_home"):$(basename "$user_home") "$user_home/.local/share/applications"; \
+        MIME_FILE="$user_home/.config/mimeapps.list"; \
+        mkdir -p "$(dirname "$MIME_FILE")"; \
+        if [ ! -f "$MIME_FILE" ]; then echo "[Default Applications]" > "$MIME_FILE"; fi; \
+        sed -i "/text\/html=/d" "$MIME_FILE"; \
+        sed -i "/x-scheme-handler\/http=/d" "$MIME_FILE"; \
+        sed -i "/x-scheme-handler\/https=/d" "$MIME_FILE"; \
+        sed -i "/\[Default Applications\]/a text/html=net.imput.helium.desktop\\nx-scheme-handler/http=net.imput.helium.desktop\\nx-scheme-handler/https=net.imput.helium.desktop" "$MIME_FILE"; \
+        chown $(basename "$user_home"):$(basename "$user_home") "$MIME_FILE"; \
+        rm -f "$user_home/.local/share/applications/net.imput.helium.desktop"; \
     fi; \
 done'
 # Optional: clean up the bundle after installation to save space in the persistent /var if needed
