@@ -6,6 +6,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 1. **Verify Documentation:** Before taking any action, read this file and the "Historical Errors & Prevention" table.
 2. **Self-Update:** If you commit an error (whether it causes a build failure or a runtime issue), after applying the fix, you **must** update the table in this file with the error description and how to avoid it in the future.
 3. **Technical Abstraction:** Errors must be documented in a **general and abstract form**. Do not limit the description to the specific instance (e.g., "Error with Valent"); instead, describe the underlying technical logic (e.g., "Flatpak remote metadata caching on atomic systems") so the solution acts as a reusable architectural pattern for similar scenarios.
+4. **Live Session Validation:** For any changes affecting graphical sessions, portals, or user-level services, the agent **must** perform live validation (e.g., using `busctl`, `systemctl --user`, or `gsettings`) to confirm the backend is active and exposing the correct interfaces *before* committing.
 
 ## Historical Errors & Prevention
 
@@ -24,6 +25,8 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **Transition Package Naming** | Assuming package names based on previous versions (e.g., KF5 vs KF6) leads to non-existent package errors during build. | Always verify exact package names on the target host or official repositories, especially for toolkit-specific libraries (Qt, KDE Frameworks). |
 | **Build Environment Leakage** | Failing to isolate build caches (like `CARGO_HOME`) in multi-stage builds leads to permission errors or bloated container layers. | Explicitly define and isolate build environment variables and cache directories within the `builder` stage. |
 | **Sandboxed App Discovery** | Placing `.desktop` files in non-standard paths prevents the host system or desktop environment from detecting sandboxed applications (Flatpaks). | Ensure all application entries are placed in or linked to standard XDG paths (e.g., `/usr/share/applications`) verified by the desktop environment. |
+| **Duplicate Flatpak Icons** | Creating manual symlinks for Flatpak `.desktop` files in directories already in `XDG_DATA_DIRS` (like `.local/share/applications`) causes launchers to display duplicate entries. | **Do not** manually link Flatpak-exported desktop files; rely on the standard `/var/lib/flatpak/exports/share` path or use `flatpak override` if path adjustments are needed. |
+| **Persistent Home Overrides** | System-wide MIME associations (in `/etc/skel`) are ignored if the user has a pre-existing `~/.config/mimeapps.list` that points to a different application. | Use systemd setup services to explicitly patch existing user configuration files in `/var/home` if a specific default application must be enforced. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
