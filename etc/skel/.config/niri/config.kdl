@@ -270,7 +270,6 @@ layout {
 
 // This line starts DankMaterialShell (DMS).
 spawn-at-startup "dms" "run"
-spawn-at-startup "/usr/libexec/gnome-remote-desktop-daemon"
 spawn-at-startup "/var/home/andres/.config/niri/scripts/auto-rotate.sh"
 spawn-at-startup "/var/home/andres/.config/niri/scripts/wallpaper_watcher.sh"
 
