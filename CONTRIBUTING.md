@@ -1,21 +1,21 @@
 # AI Contribution Guidelines
 
-Questo repository ha una struttura rigida basata su Fedora Atomic e build di container. Ogni agente AI che interagisce con questo codice **deve** seguire queste regole per evitare di rompere la pipeline di build.
+This repository has a rigid structure based on Fedora Atomic and containerized builds. Any AI agent interacting with this codebase **must** adhere to these rules to avoid breaking the build pipeline.
 
-## Regole Operative Mandatorie
-1. **Verifica Documentazione:** Prima di ogni azione, leggi questo file e la tabella "Errori Storici e Prevenzione".
-2. **Auto-Aggiornamento:** Se commetti un errore che causa il fallimento della build, dopo aver applicato il fix, **devi obbligatoriamente** aggiornare la tabella in questo file con la descrizione dell'errore e come evitarlo in futuro.
-3. **Integrità del Filesystem:** Git non traccia cartelle vuote. Se elimini l'ultimo file da una cartella presente nel `Containerfile` (es. `etc/`, `usr/`), devi creare un file `.keep` per non far sparire la directory.
+## Mandatory Operational Rules
+1. **Verify Documentation:** Before taking any action, read this file and the "Historical Errors & Prevention" table.
+2. **Self-Update:** If you commit an error that causes a build failure, after applying the fix, you **must** update the table in this file with the error description and how to avoid it in the future.
+3. **Filesystem Integrity:** Git does not track empty directories. If you delete the last file from a directory referenced in the `Containerfile` (e.g., `etc/`, `usr/`), you must create a `.keep` file to prevent the directory from disappearing.
 
-## Errori Storici e Prevenzione
+## Historical Errors & Prevention
 
-| Errore Commesso | Causa Tecnica | Azione Preventiva / Soluzione |
+| Error Committed | Technical Cause | Preventive Action / Solution |
 | :--- | :--- | :--- |
-| **Rimozione cartelle vitali** | Eliminando l'ultimo file in `usr/`, la cartella è sparita da Git, facendo fallire il comando `COPY usr /usr` nel Containerfile. | Se una cartella deve restare nel repo ma è vuota, aggiungi un file `.keep`. |
-| **Pacchetti inesistenti** | Tentativo di installare pacchetti nel Containerfile con nomi errati o non presenti nei repo Fedora. | **Prima** di aggiungere un pacchetto al Containerfile, verifica la sua esistenza tramite `dnf search` o sui repository ufficiali Fedora. |
-| **Mancato riconoscimento Browser** | Helium non si impostava come predefinito perché cercava un file `.desktop` con nome specifico non presente nel sandbox. | Non creare duplicati in `/usr/share/applications`. Usa `tmpfiles.d` per creare link simbolici che puntino ai file esportati da Flatpak. |
+| **Vital Directory Removal** | Deleting the last file in `usr/` caused the directory to vanish from Git, breaking the `COPY usr /usr` command in the Containerfile. | If a directory must remain in the repo but is empty, add a `.keep` file. |
+| **Non-existent Packages** | Attempting to install packages in the Containerfile using incorrect names or packages not present in Fedora repos. | **Before** adding a package to the Containerfile, verify its existence using `dnf search` or official Fedora repository search tools. |
+| **Browser Identity Mismatch** | Helium browser could not set itself as default because it looked for a specific `.desktop` filename not present in the sandbox. | Do not create duplicates in `/usr/share/applications`. Use `tmpfiles.d` to create symlinks pointing from expected names to Flatpak-exported files. |
 
-## Verifica Pacchetti (Workflow consigliato)
-Prima di modificare il `Containerfile`, l'agente deve simulare o verificare i nomi dei pacchetti:
-- Controllare se il pacchetto è disponibile per la versione di Fedora target.
-- Verificare se richiede repository COPR specifici già presenti o da aggiungere.
+## Package Verification (Recommended Workflow)
+Before modifying the `Containerfile`, the agent should simulate or verify package names:
+- Check if the package is available for the target Fedora version.
+- Verify if it requires specific COPR repositories that are already present or need to be added.
