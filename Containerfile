@@ -72,7 +72,7 @@ RUN if id "greetd" &>/dev/null; then \
 
 # STRATO 5: Inizializzazione Flatpak e Valent
 RUN flatpak remote-delete valent || true && \
-    flatpak remote-add --if-not-exists --system valent https://valent.andyholmes.ca/repo/ && \
+    flatpak remote-add --if-not-exists --system valent /etc/flatpak/remotes.d/valent.flatpakrepo && \
     flatpak update --appstream valent
 
 # STRATO 6: Helium Flatpak (Pre-download latest x86_64 bundle)

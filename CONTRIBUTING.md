@@ -18,6 +18,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **GPG Verification Error** | Providing a corrupted or incomplete GPG key and incorrect repository URL in a `.flatpakrepo` file prevents remote synchronization. | **Always** fetch the raw `.flatpakrepo` content from the source to ensure the GPG key and URL are correct. |
 | **Missing Plugin Dependencies** | Installing a DMS plugin (like usbManager) without adding its CLI dependencies (parted, mkfs, etc.) to the Containerfile makes it non-functional. | **Verify** the `README.md` or source code of any plugin to identify and include all required system-level dependencies. |
 | **Broken Config Includes** | Using `include` statements in KDL configs (like Niri) for files that don't exist in the repository prevents proper loading. | **Always** ensure that all included files are present in the repository, even if they are empty placeholders. |
+| **Flatpak GPG Import Failure** | Running `flatpak remote-add` with a URL in the Containerfile fails if the GPG key is not yet in the system keyring. | **Always** point `flatpak remote-add` to the local `.flatpakrepo` file (after it's been copied to /etc) to ensure the key is imported correctly. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
