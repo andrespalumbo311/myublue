@@ -47,7 +47,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri dms dms-greeter \
-    xdg-desktop-portal-wlr \
+    xdg-desktop-portal-hyprland \
     greetd tuigreet fprintd fprintd-pam \
     brightnessctl grim slurp \
     pavucontrol kitty pamixer \
