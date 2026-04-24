@@ -47,7 +47,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri dms dms-greeter \
-    gnome-remote-desktop \
+    xdg-desktop-portal-wlr \
     greetd tuigreet fprintd fprintd-pam \
     brightnessctl grim slurp \
     pavucontrol kitty pamixer \
@@ -69,7 +69,7 @@ RUN if id "greetd" &>/dev/null; then \
     chmod +x /etc/scx/scx-launcher.sh && \
     dconf update && \
     systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service bluetooth.service bluetooth-poweroff.service helium-setup.service && \
-    systemctl --global enable easyeffects.service gnome-remote-desktop.service && \
+    systemctl --global enable easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer
 
 # STRATO 5: Inizializzazione Flatpak e Valent
