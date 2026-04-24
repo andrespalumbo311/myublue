@@ -1,7 +1,8 @@
-# STAGE 1: Compilazione binari custom (wl-clip-persist e sched-ext)
-FROM fedora:41 AS builder
+# STAGE 1: Compilazione binari custom (sched-ext)
+FROM ghcr.io/ublue-os/base-main:latest AS builder
 
 # Installazione dipendenze per scx
+ENV CARGO_HOME=/tmp/cargo
 RUN dnf install -y \
     git cargo clang clang-devel llvm-devel \
     libbpf-devel elfutils-libelf-devel zlib-devel \
