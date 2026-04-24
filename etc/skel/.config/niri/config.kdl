@@ -316,74 +316,7 @@ animations {
 // Find more information on the wiki:
 // https://yalter.github.io/niri/Configuration:-Window-Rules
 
-// Open browser at 100% width.
-window-rule {
-    match app-id=r#"firefox$"#
-    match app-id=r#"org\.mozilla\.firefox$"#
-    default-column-width { proportion 1.0; }
-}
-
-// Open VS Code and Antigravity at 100% width.
-window-rule {
-    match app-id=r#"^code(-url-handler)?$"#
-    match app-id=r#"^com\.visualstudio\.code$"#
-    match app-id=r#"^antigravity$"#
-    default-column-width { proportion 1.0; }
-}
-
-// Open Xournal++ at 100% width.
-window-rule {
-    match app-id=r#"^com\.github\.xournalpp\.xournalpp$"#
-    default-column-width { proportion 1.0; }
-}
-
-// Open ONLY the main Stata 19 window at 100% width.
-window-rule {
-    match app-id=r#"(?i)stata19"# title=r#"(?i)^statanow"#
-    default-column-width { proportion 1.0; }
-}
-
-// Ensure other Stata windows (Editor, etc.) open at default width (50%).
-window-rule {
-    match app-id=r#"(?i)stata19"#
-    exclude title=r#"(?i)^statanow"#
-}
-
-// Telegram: fixed width as it is currently open (380px)
-window-rule {
-    match app-id=r#"^org\.telegram\.desktop$"#
-    default-column-width { fixed 380; }
-}
-
-// WezTerm workaround
-window-rule {
-    match app-id=r#"^org\.wezfurlong\.wezterm$"#
-    default-column-width {}
-}
-
-// Open the Firefox picture-in-picture player as floating by default.
-window-rule {
-    // This app-id regular expression will work for both:
-    // - host Firefox (app-id is "firefox")
-    // - Flatpak Firefox (app-id is "org.mozilla.firefox")
-    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
-    open-floating true
-}
-
-// Example: block out two password managers from screen capture.
-// (This example rule is commented out with a "/-" in front.)
-/-window-rule {
-    match app-id=r#"^org\.keepassxc\.KeePassXC$"#
-    match app-id=r#"^org\.gnome\.World\.Secrets$"#
-
-    block-out-from "screen-capture"
-
-    // Use this instead if you want them visible on third-party screenshot tools.
-    // block-out-from "screencast"
-}
-
 // Example: enable rounded corners for all windows.
-// (This example rule is commented out with a "/-" in front.)
 window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
@@ -671,3 +604,8 @@ binds {
     // moving the mouse or pressing any other key.
     Mod+Shift+P { power-off-monitors; }
 }
+
+include "dms/cursor.kdl"
+include "dms/outputs.kdl"
+include "dms/windowrules.kdl"
+
