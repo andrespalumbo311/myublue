@@ -39,7 +39,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     git cmake gcc gcc-c++ meson micro tailscale topgrade \
     inotify-tools powertop tlp tlp-rdw freerdp \
-    uupd ananicy-cpp scx-tools matugen jq flatpak && \
+    uupd ananicy-cpp scx-tools matugen jq flatpak udisks2 && \
     dnf5 clean all
 
 # STRATO 3: Ambiente Grafico e Utility
