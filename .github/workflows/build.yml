@@ -11,6 +11,12 @@ on:
       - main
     paths-ignore:
       - '**/README.md'
+      - 'CONTRIBUTING.md'
+      - 'LICENSE'
+      - 'artifacthub-repo.yml'
+      - '.gitignore'
+      - '.github/dependabot.yml'
+      - '.github/renovate.json5'
   workflow_dispatch:
 
 env:
