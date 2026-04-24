@@ -541,6 +541,7 @@ binds {
     Mod+Ctrl+F { expand-column-to-available-width; }
 
     Mod+C hotkey-overlay-title="Clipboard history" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
+    Mod+U hotkey-overlay-title="USB Management" { spawn "dms" "ipc" "call" "usbManager" "toggle"; }
 
     // Center all fully visible columns on screen.
     Mod+Ctrl+C { center-visible-columns; }
