@@ -16,6 +16,8 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **Non-persistent Flatpak Remote** | Using `flatpak remote-add` in the Containerfile doesn't persist in the final image. | Use the file-based approach by adding a `.flatpakrepo` file to `etc/flatpak/remotes.d/` instead. |
 | **Broken URL in Containerfile** | Using an incorrect/non-existent URL for a repository (e.g., Valent Flatpak repo) causes the build to fail at the `RUN` step. | **Always** verify URLs (especially for third-party repos) using `curl -I` or a browser before adding them to the build process. |
 | **GPG Verification Error** | Providing a corrupted or incomplete GPG key and incorrect repository URL in a `.flatpakrepo` file prevents remote synchronization. | **Always** fetch the raw `.flatpakrepo` content from the source to ensure the GPG key and URL are correct. |
+| **Missing Plugin Dependencies** | Installing a DMS plugin (like usbManager) without adding its CLI dependencies (parted, mkfs, etc.) to the Containerfile makes it non-functional. | **Verify** the `README.md` or source code of any plugin to identify and include all required system-level dependencies. |
+| **Broken Config Includes** | Using `include` statements in KDL configs (like Niri) for files that don't exist in the repository prevents proper loading. | **Always** ensure that all included files are present in the repository, even if they are empty placeholders. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
