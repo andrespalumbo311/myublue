@@ -1,5 +1,0 @@
-[org/gnome/desktop/remote-desktop/rdp]
-screen-share-mode='mirror'
-
-[org/gnome/desktop/remote-desktop/grd]
-enabled=true
