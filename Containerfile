@@ -41,7 +41,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     inotify-tools powertop tlp tlp-rdw freerdp \
     uupd ananicy-cpp scx-tools flatpak udisks2 \
     parted dosfstools exfatprogs e2fsprogs \
-    fish starship zoxide fzf && \
+    fish zoxide fzf && \
     sed -i 's|SHELL=/bin/bash|SHELL=/usr/bin/fish|' /etc/default/useradd && \
     dnf5 clean all
 
@@ -88,6 +88,11 @@ RUN flatpak remote-delete valent || true && \
 # STRATO 6: Helium Flatpak (Pre-download latest x86_64 bundle)
 RUN mkdir -p /usr/share/helium && \
     HELIUM_URL=$(curl -s https://api.github.com/repos/ShyVortex/helium-flatpak/releases/latest | jq -r '.assets[] | select(.name | contains("x86_64")) | .browser_download_url') && \
+    curl -L -o /usr/share/helium/helium.flatpak "$HELIUM_URL"
+
+### LINTING
+RUN bootc container lint
+| .browser_download_url') && \
     curl -L -o /usr/share/helium/helium.flatpak "$HELIUM_URL"
 
 ### LINTING
