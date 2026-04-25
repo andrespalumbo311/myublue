@@ -1,0 +1,9 @@
+[Unit]
+Description=Universal Update Program
+Documentation=https://github.com/ublue-os/uupd
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/uupd

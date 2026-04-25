@@ -1,0 +1,11 @@
+[Unit]
+Description=Universal Update Program Timer
+Documentation=https://github.com/ublue-os/uupd
+
+[Timer]
+OnBootSec=2h
+OnUnitActiveSec=1d
+Persistent=true
+
+[Install]
+WantedBy=timers.target
