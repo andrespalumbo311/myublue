@@ -69,7 +69,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     pavucontrol kitty pamixer \
     easyeffects lsp-plugins \
     nautilus gvfs-mtp gvfs-smb \
-    gnome-keyring \
+    gnome-keyring gnome-keyring-pam \
     cups-pk-helper kf6-kimageformats qt6-qtimageformats \
     accountsservice \
     xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-user-dirs-gtk && \
@@ -83,6 +83,7 @@ RUN if id "greetd" &>/dev/null; then \
         usermod -aG video,render,tty greetd; \
     fi && \
     chmod +x /etc/scx/scx-launcher.sh && \
+    chmod +x /etc/skel/.config/niri/scripts/*.sh && \
     dconf update && \
     systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service bluetooth.service bluetooth-poweroff.service helium-setup.service && \
     systemctl --global enable easyeffects.service && \
