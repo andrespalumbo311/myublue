@@ -9,13 +9,13 @@
             "disable": false
         },
         "flatpak": {
-            "disable": true
+            "disable": false
         },
         "brew": {
-            "disable": true
+            "disable": false
         },
         "distrobox": {
-            "disable": true
+            "disable": false
         }
     }
 }

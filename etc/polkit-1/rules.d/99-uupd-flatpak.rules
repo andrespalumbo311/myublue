@@ -1,10 +1,7 @@
-/* Permetti a uupd di aggiornare i Flatpak di sistema senza chiedere password o fallire per mancanza di permessi */
+/* Permetti a uupd e agli utenti nel gruppo wheel di gestire Flatpak e rpm-ostree senza password */
 polkit.addRule(function(action, subject) {
-    if ((action.id == "org.freedesktop.Flatpak.runtime-install" ||
-         action.id == "org.freedesktop.Flatpak.runtime-uninstall" ||
-         action.id == "org.freedesktop.Flatpak.app-install" ||
-         action.id == "org.freedesktop.Flatpak.app-uninstall" ||
-         action.id == "org.freedesktop.Flatpak.modify-repo") &&
+    if ((action.id.indexOf("org.freedesktop.Flatpak.") == 0 ||
+         action.id.indexOf("org.projectatomic.rpmostree1.") == 0) &&
         subject.isInGroup("wheel")) {
         return polkit.Result.YES;
     }
