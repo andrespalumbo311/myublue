@@ -1,0 +1,11 @@
+// Configurazione monitor gestita da DMS o manuale
+// Per posizionare un monitor sopra l'altro, usa la coordinata y.
+// Esempio:
+// output "eDP-1" {
+//     position x=0 y=1080
+// }
+// output "DP-1" {
+//     position x=0 y=0
+// }
+
+// DMS (DankMaterialShell) caricherà qui i profili se configurato.
