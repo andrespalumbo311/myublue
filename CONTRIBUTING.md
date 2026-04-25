@@ -28,6 +28,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **Duplicate Flatpak Icons** | Creating manual symlinks for Flatpak `.desktop` files in `XDG_DATA_DIRS` causes duplicate launcher entries. | **Do not** manually link Flatpak-exported desktop files; rely on standard export paths or use `flatpak override`. |
 | **Persistent Home Overrides** | System-wide MIME associations in `/etc/skel` are ignored if the user has a pre-existing `~/.config/mimeapps.list`. | Use systemd setup services to explicitly patch existing user configuration files in `/var/home` if a default must be enforced. |
 | **Shell Configuration Drift** | Placing critical CLI tool initializations in `/etc/skel` fails to update existing users during image upgrades. | Move system-wide shell initializations (interactive features, aliases) to `/etc/fish/conf.d/` or equivalent system paths to ensure all users receive updates. |
+| **Locked Keyring on Wayland** | Compositors like Niri don't automatically unlock the GNOME Keyring, causing repetitive password prompts. | 1. Configure PAM (`/etc/pam.d/greetd`) to include `pam_gnome_keyring.so`. 2. Explicitly initialize the keyring daemon and export variables to D-Bus/Systemd during session startup. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
