@@ -36,3 +36,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
 - Check if the package is available for the target Fedora version.
 - Verify if it requires specific COPR repositories that are already present or need to be added.
+| Errore | Causa | Soluzione |
+| --- | --- | --- |
+| Sintassi Monitor Niri (KDL) | Uso di spazi o virgolette errate in 'position' | Usare 'position x=0 y=0' senza spazi intorno a '=' |
+| Keyring non sbloccato | Trattino '-' in PAM o mancanza di variabili D-Bus | Rimuovere '-' da pam_gnome_keyring e usare dbus-update-activation-environment |
