@@ -18,11 +18,11 @@ ExecStartPost=/usr/bin/bash -c "for user_home in /var/home/*; do \
         if ! grep -q \"net.imput.helium.desktop\" \"\$MIME_FILE\"; then \
             sed -i \"/\\[Added Associations\\]/a text/html=net.imput.helium.desktop;x-scheme-handler/http=net.imput.helium.desktop;x-scheme-handler/https=net.imput.helium.desktop;\" \"\$MIME_FILE\"; \
         fi; \
-        APP_DIR=\"\$user_home/.local/share/applications\"; \
-        mkdir -p \"\$APP_DIR\"; \
-        echo -e \"[Desktop Entry]\\nType=Application\\nName=Helium\\nExec=flatpak run net.imput.helium\\nNoDisplay=true\\nTerminal=false\\nCategories=\" > \"\$APP_DIR/helium.desktop\"; \
+        APP_DIR="$user_home/.local/share/applications"; \
+        mkdir -p "$APP_DIR"; \
+        echo -e "[Desktop Entry]\nType=Application\nName=Helium\nExec=flatpak run net.imput.helium\nNoDisplay=true\nTerminal=false\nCategories=\nMimeType=text/html;text/xml;application/xhtml+xml;application/xml;x-scheme-handler/http;x-scheme-handler/https;" > "$APP_DIR/net.imput.helium.desktop"; \
         flatpak override --user --filesystem=xdg-data/applications:ro net.imput.helium; \
-        chown -R \$(basename \"\$user_home\"):\$(basename \"\$user_home\") \"\$APP_DIR/helium.desktop\"; \
+        chown -R $(basename "$user_home"):$(basename "$user_home") "$APP_DIR/net.imput.helium.desktop"; \
     fi; \
 done"
 # Optional: clean up the bundle after installation to save space in the persistent /var if needed
