@@ -269,10 +269,10 @@ layout {
 // See the binds section below for more spawn examples.
 
 // This line starts DankMaterialShell (DMS).
-spawn-at-startup "~/.config/niri/scripts/init-keyring.sh"
+spawn-sh-at-startup "$HOME/.config/niri/scripts/init-keyring.sh"
 spawn-at-startup "dms" "run"
-spawn-at-startup "~/.config/niri/scripts/auto-rotate.sh"
-spawn-at-startup "~/.config/niri/scripts/wallpaper_watcher.sh"
+spawn-sh-at-startup "$HOME/.config/niri/scripts/auto-rotate.sh"
+spawn-sh-at-startup "$HOME/.config/niri/scripts/wallpaper_watcher.sh"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
