@@ -20,7 +20,7 @@ ExecStartPost=/usr/bin/bash -c "for user_home in /var/home/*; do \
         fi; \
         APP_DIR=\"\$user_home/.local/share/applications\"; \
         mkdir -p \"\$APP_DIR\"; \
-        echo -e \"[Desktop Entry]\\nType=Application\\nName=Helium\\nExec=flatpak run net.imput.helium\\nNoDisplay=true\" > \"\$APP_DIR/helium.desktop\"; \
+        echo -e \"[Desktop Entry]\\nType=Application\\nName=Helium\\nExec=flatpak run net.imput.helium\\nNoDisplay=true\\nTerminal=false\\nCategories=\" > \"\$APP_DIR/helium.desktop\"; \
         flatpak override --user --filesystem=xdg-data/applications:ro net.imput.helium; \
         chown -R \$(basename \"\$user_home\"):\$(basename \"\$user_home\") \"\$APP_DIR/helium.desktop\"; \
     fi; \
