@@ -27,6 +27,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **Sandboxed App Discovery** | Placing `.desktop` files in non-standard paths prevents detection of sandboxed applications (Flatpaks). | Ensure all application entries are placed in or linked to standard XDG paths verified by the desktop environment. |
 | **Duplicate Flatpak Icons** | Creating manual symlinks for Flatpak `.desktop` files in `XDG_DATA_DIRS` causes duplicate launcher entries. | **Do not** manually link Flatpak-exported desktop files; rely on standard export paths or use `flatpak override`. |
 | **Persistent Home Overrides** | System-wide MIME associations in `/etc/skel` are ignored if the user has a pre-existing `~/.config/mimeapps.list`. | Use systemd setup services to explicitly patch existing user configuration files in `/var/home` if a default must be enforced. |
+| **Shell Configuration Drift** | Placing critical CLI tool initializations in `/etc/skel` fails to update existing users during image upgrades. | Move system-wide shell initializations (interactive features, aliases) to `/etc/fish/conf.d/` or equivalent system paths to ensure all users receive updates. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
