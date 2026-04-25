@@ -17,9 +17,9 @@ RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
     cp target/release/scx_rusty /tmp/scx-build/
 
 # Download utility (Starship, Topgrade, uupd)
-RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes --dest /tmp/scx-build && \
+RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir /tmp/scx-build && \
     TOPGRADE_URL=$(curl -s https://api.github.com/repos/topgrade-rs/topgrade/releases/latest | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl")) | .browser_download_url') && \
-    curl -L "$TOPGRADE_URL" | tar -xz -C /tmp/scx-build && \
+    curl -L "$TOPGRADE_URL" | tar -xz -C /tmp/scx-build --strip-components=1 || curl -L "$TOPGRADE_URL" | tar -xz -C /tmp/scx-build && \
     UUPD_URL=$(curl -s https://api.github.com/repos/ublue-os/uupd/releases/latest | jq -r '.assets[] | select(.name == "uupd") | .browser_download_url') && \
     curl -L -o /tmp/scx-build/uupd "$UUPD_URL" && \
     chmod +x /tmp/scx-build/uupd
