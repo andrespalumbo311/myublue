@@ -37,11 +37,19 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 # STRATO 2: Utilità CLI e System Tooling
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
-    git cmake gcc gcc-c++ meson micro tailscale topgrade \
+    git tailscale topgrade \
     inotify-tools powertop tlp tlp-rdw freerdp \
-    uupd ananicy-cpp scx-tools matugen jq flatpak udisks2 \
-    parted dosfstools exfatprogs e2fsprogs && \
+    uupd ananicy-cpp scx-tools flatpak udisks2 \
+    parted dosfstools exfatprogs e2fsprogs \
+    fish starship zoxide fzf && \
+    sed -i 's|SHELL=/bin/bash|SHELL=/usr/bin/fish|' /etc/default/useradd && \
     dnf5 clean all
+
+# Installazione plugin Bass (per compatibilità script Bash in Fish)
+RUN git clone https://github.com/edc/bass.git /tmp/bass && \
+    mkdir -p /usr/share/fish/vendor_functions.d && \
+    cp /tmp/bass/functions/bass.fish /usr/share/fish/vendor_functions.d/ && \
+    rm -rf /tmp/bass
 
 # STRATO 3: Ambiente Grafico e Utility
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
