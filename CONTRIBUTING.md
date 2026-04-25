@@ -31,6 +31,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **Locked Keyring on Wayland** | Compositors like Niri don't automatically unlock the GNOME Keyring. Incorrect XDG portal backend names (e.g. `gnome-keyring` instead of `gnome`) break Secret portal integration for Flatpaks. | 1. Configure PAM (`/etc/pam.d/greetd`). 2. Use `org.freedesktop.impl.portal.Secret=gnome` (not `gnome-keyring`). 3. Explicitly export `GNOME_KEYRING_CONTROL` to D-Bus/Systemd. |
 | **SELinux Denials in greetd** | Custom PAM files for `greetd` without `pam_selinux.so` prevent the session from transitioning to the user context, blocking access to systemd units. | **Always** include `pam_selinux.so` (open/close) in custom PAM configs on Fedora-based systems to ensure correct context transition. |
 | **Niri Spawn Path Failure** | Niri's `spawn-at-startup` does not expand `~`. Using relative or tilde paths causes the startup to fail silently or crash the session. | Use `spawn-sh-at-startup` with `$HOME` for scripts located in user directories to ensure proper shell expansion. |
+| **Monitor Alignment & Pointer Traps** | Defining monitor positions that only touch at a single logical point (e.g., corner-to-corner) or using auto-snapping features that disregard vertical layouts. | 1. Ensure monitor boundaries share a logical edge (not just a vertex). 2. Disable third-party "monitor snapping" features (e.g., in DMS) when using vertical or custom layouts to prevent unintended horizontal offsets. 3. Validate KDL syntax (use `x=0 y=0`) to prevent fallback to automatic horizontal positioning. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
@@ -38,5 +39,5 @@ Before modifying the `Containerfile`, the agent should simulate or verify packag
 - Verify if it requires specific COPR repositories that are already present or need to be added.
 | Errore | Causa | Soluzione |
 | --- | --- | --- |
-| Sintassi Monitor Niri (KDL) | Uso di spazi o virgolette errate in 'position' | Usare 'position x=0 y=0' senza spazi intorno a '=' |
+| Allineamento Monitor | Contatto su un solo vertice o snap orizzontale forzato | Garantire bordi condivisi e disattivare lo snap automatico di DMS per layout verticali |
 | Keyring non sbloccato | Trattino '-' in PAM o mancanza di variabili D-Bus | Rimuovere '-' da pam_gnome_keyring e usare dbus-update-activation-environment |
