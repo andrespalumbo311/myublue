@@ -1,18 +1,21 @@
 #!/bin/bash
-# Inizializza GNOME Keyring e esporta le variabili alla sessione D-Bus e Systemd
+# Inizializza GNOME Keyring e assicura l'esportazione delle variabili
 
-# Avvia il daemon o recupera i dati da quello esistente
-# Usiamo --replace per assicurarci di avere un'istanza pulita sotto il nostro controllo
-# se PAM ha fallito o ha lasciato uno stato inconsistente.
-eval $(gnome-keyring-daemon --start --components=secrets,ssh)
-
-# Esporta le variabili all'ambiente della sessione
-export GNOME_KEYRING_CONTROL SSH_AUTH_SOCK
-
-# Aggiorna D-Bus e Systemd
-if command -v dbus-update-activation-environment >/dev/null; then
-    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GNOME_KEYRING_CONTROL SSH_AUTH_SOCK
+# Se il daemon è già stato avviato da PAM (comune su Fedora), 
+# dobbiamo recuperare le variabili dall'ambiente o forzarne il rilevamento.
+if [ -z "$GNOME_KEYRING_CONTROL" ]; then
+    # Prova a recuperare le variabili da un'istanza esistente
+    eval $(gnome-keyring-daemon --start --components=secrets,ssh)
 fi
 
-# Fallback per systemd se dbus-update fallisce parzialmente
-systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GNOME_KEYRING_CONTROL SSH_AUTH_SOCK
+# Esporta le variabili per i processi figli dello script
+export GNOME_KEYRING_CONTROL SSH_AUTH_SOCK
+
+# CRUCIALE: Esporta le variabili al bus di sessione D-Bus e a Systemd User
+# Senza questo, niri e le app (specie Flatpak) non troveranno il keyring.
+if command -v dbus-update-activation-environment >/dev/null; then
+    dbus-update-activation-environment --systemd GNOME_KEYRING_CONTROL SSH_AUTH_SOCK DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+fi
+
+# Fallback aggiuntivo per systemd
+systemctl --user import-environment GNOME_KEYRING_CONTROL SSH_AUTH_SOCK DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
