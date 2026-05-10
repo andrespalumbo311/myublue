@@ -1,0 +1,17 @@
+[connection]
+id=enp0s31f6
+uuid=fb1d54e9-f78c-45e0-8daa-3dd49566bead
+type=ethernet
+autoconnect=false
+interface-name=enp0s31f6
+
+[ethernet]
+
+[ipv4]
+method=auto
+
+[ipv6]
+addr-gen-mode=eui64
+method=auto
+
+[proxy]
