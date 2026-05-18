@@ -46,7 +46,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     git tailscale \
-    inotify-tools powertop tlp tlp-rdw freerdp \
+    inotify-tools powertop power-profiles-daemon freerdp \
     scx-tools flatpak udisks2 \
     parted dosfstools exfatprogs e2fsprogs \
     fish zoxide fzf && \
@@ -85,7 +85,7 @@ RUN if id "greetd" &>/dev/null; then \
     chmod +x /etc/scx/scx-launcher.sh && \
     chmod +x /etc/skel/.config/niri/scripts/*.sh && \
     dconf update && \
-    systemctl enable tailscaled.service greetd.service uupd.timer scx.service bluetooth.service bluetooth-poweroff.service && \
+    systemctl enable tailscaled.service greetd.service uupd.timer scx.service power-profiles-daemon.service bluetooth.service bluetooth-poweroff.service && \
     systemctl --global enable easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer
 
