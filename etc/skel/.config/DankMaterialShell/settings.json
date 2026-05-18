@@ -133,7 +133,7 @@
   "workspaceNameIcons": {},
   "waveProgressEnabled": true,
   "scrollTitleEnabled": true,
-  "audioVisualizerEnabled": true,
+  "audioVisualizerEnabled": false,
   "audioScrollMode": "volume",
   "audioWheelScrollAmount": 5,
   "clockCompactMode": false,

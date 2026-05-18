@@ -67,6 +67,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     greetd tuigreet fprintd fprintd-pam \
     brightnessctl grim slurp \
     pavucontrol kitty pamixer \
+    intel-media-driver libva-utils \
     easyeffects lsp-plugins \
     nautilus gvfs-mtp gvfs-smb \
     gnome-keyring gnome-keyring-pam \

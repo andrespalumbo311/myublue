@@ -24,16 +24,27 @@ fi
 THRESHOLD=250000
 
 get_rot() {
-    niri msg -j outputs | jq -r ".\"$OUTPUT\".logical.transform" | tr '[:upper:]' '[:lower:]'
+    local rot=$(niri msg -j outputs | jq -r ".\"$OUTPUT\".logical.transform" 2>/dev/null | tr '[:upper:]' '[:lower:]')
+    echo "${rot:-unknown}"
 }
 
 apply_rot() {
     local target=$1
     local current=$(get_rot)
+    
+    # Se current è unknown, non facciamo nulla per evitare spam se niri è momentaneamente irraggiungibile
+    if [ "$current" = "unknown" ]; then
+        return
+    fi
+
     if [ "$target" != "$current" ]; then
         niri msg output "$OUTPUT" transform "$target"
-        sleep 0.5
-        [ -f "$APPLY_WALLPAPER" ] && bash "$APPLY_WALLPAPER"
+        sleep 1
+        # Verifichiamo di nuovo dopo il cambio per assicurarci che sia avvenuto
+        local post_check=$(get_rot)
+        if [ "$target" = "$post_check" ] && [ -f "$APPLY_WALLPAPER" ]; then
+             bash "$APPLY_WALLPAPER"
+        fi
     fi
 }
 
