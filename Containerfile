@@ -85,7 +85,7 @@ RUN if id "greetd" &>/dev/null; then \
     chmod +x /etc/scx/scx-launcher.sh && \
     chmod +x /etc/skel/.config/niri/scripts/*.sh && \
     dconf update && \
-    systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service bluetooth.service bluetooth-poweroff.service helium-setup.service && \
+    systemctl enable tailscaled.service greetd.service uupd.timer scx.service ananicy-cpp.service bluetooth.service bluetooth-poweroff.service && \
     systemctl --global enable easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer
 
@@ -93,11 +93,6 @@ RUN if id "greetd" &>/dev/null; then \
 RUN flatpak remote-delete valent || true && \
     flatpak remote-add --if-not-exists --system valent /etc/flatpak/remotes.d/valent.flatpakrepo && \
     flatpak update --appstream valent
-
-# STRATO 6: Helium Flatpak (Pre-download latest x86_64 bundle)
-RUN mkdir -p /usr/share/helium && \
-    HELIUM_URL=$(curl -s https://api.github.com/repos/ShyVortex/helium-flatpak/releases/latest | jq -r '.assets[] | select(.name | contains("x86_64")) | .browser_download_url') && \
-    curl -L -o /usr/share/helium/helium.flatpak "$HELIUM_URL"
 
 ### LINTING
 RUN bootc container lint
