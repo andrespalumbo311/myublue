@@ -48,12 +48,17 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 RUN --mount=type=secret,id=MOK_key \
     --mount=type=secret,id=MOK_crt \
     --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
-    export KERNEL_INSTALL_SKIP_REGENERATING_INITRD=yes && \
+    mkdir -p /etc/kernel && \
+    echo "initrd_generator=none" > /etc/kernel/install.conf && \
     dnf5 -y --setopt=protected_packages= install \
         kernel-cachyos-lto sudo-rs uutils-coreutils sbsigntools \
         --allowerasing && \
+    rm /etc/kernel/install.conf && \
     ln -sf /usr/bin/sudo-rs /usr/bin/sudo && \
     KVER=$(ls /lib/modules | grep cachyos | head -n 1) && \
+    depmod -a $KVER && \
+    dracut --kver $KVER --no-hostonly --reproducible --add ostree --force /lib/modules/$KVER/initramfs.img && \
+    chmod 0600 /lib/modules/$KVER/initramfs.img && \
     sbsign --key /run/secrets/MOK_key --cert /run/secrets/MOK_crt --output /lib/modules/$KVER/vmlinuz /lib/modules/$KVER/vmlinuz && \
     setsebool -P domain_kernel_load_modules on && \
     dnf5 -y copr disable bieszczaders/kernel-cachyos-lto && \
