@@ -48,8 +48,9 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
 RUN --mount=type=secret,id=MOK_key \
     --mount=type=secret,id=MOK_crt \
     --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
-    dnf5 -y remove kernel kernel-core kernel-modules sudo && \
-    dnf5 -y install kernel-cachyos-lto sudo-rs uutils-coreutils sbsigntools openssl && \
+    dnf5 -y --setopt=protected_packages= install \
+        kernel-cachyos-lto sudo-rs uutils-coreutils sbsigntools openssl \
+        --allow-erasing && \
     ln -sf /usr/bin/sudo-rs /usr/bin/sudo && \
     KVER=$(ls /lib/modules | head -n 1) && \
     sbsign --key /run/secrets/MOK_key --cert /run/secrets/MOK_crt --output /lib/modules/$KVER/vmlinuz /lib/modules/$KVER/vmlinuz && \
