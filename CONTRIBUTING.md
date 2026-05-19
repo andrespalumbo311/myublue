@@ -39,6 +39,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **Audio Sink Sync (Deaf Slider)** | Decoupled volume between EasyEffects (software) and ALSA (hardware) results in non-functional sliders if hardware gain is low. | Enable **Volume Tracking** in EasyEffects global settings to synchronize software gain with the underlying hardware sink. |
 | **Protected Package Swap Constraints (DNF5)** | DNF5 prevents the removal of critical packages (e.g., `sudo`) defined in `protected_packages` even if a replacement is provided in the same transaction. | Use `--setopt=protected_packages=` to temporarily clear the protection list during the swap transaction. Prefer a single transaction with `--allow-erasing`. |
 | **Repository Asset Persistence** | Over-aggressive manual cleanup of build artifacts can lead to the accidental deletion of tracked repository assets (like `.der` certificates). | Distinguish between untracked build secrets (to be removed) and tracked public assets (to be preserved) before executing cleanup commands. |
+| **Unchecked Pipe Execution (Curl to Shell)** | Piping `curl` output directly to `sh" without the `-f` flag causes the shell to execute error messages (e.g., "error: 404") if the download fails. | **Always** use `curl -fsSL` when piping to a shell. Explicitly install all download/extraction utilities (`tar`, `xz`, `jq`) in the `builder` stage. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
@@ -50,3 +51,4 @@ Before modifying the `Containerfile`, the agent should simulate or verify packag
 | Keyring non sbloccato | Trattino '-' in PAM o mancanza di variabili D-Bus | Rimuovere '-' da pam_gnome_keyring e usare dbus-update-activation-environment |
 | Rimozione pacchetti protetti (DNF5) | DNF5 blocca la rimozione di pacchetti critici (come `sudo`) | Usare `--setopt=protected_packages=` per azzerare la lista protezione e `--allow-erasing` |
 | Asset tracciati rimossi per errore | Pulizia manuale troppo aggressiva dei file di build | Distinguere tra segreti (da cancellare) e asset pubblici tracciati (da mantenere) |
+| Esecuzione pipe non verificata (Curl) | Piping di `curl` in `sh` senza `-f` esegue messaggi di errore | Usare sempre `curl -fsSL` e installare esplicitamente `tar`, `xz`, `jq` nello stage builder |
