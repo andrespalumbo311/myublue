@@ -49,6 +49,6 @@ Before modifying the `Containerfile`, the agent should simulate or verify packag
 | --- | --- | --- |
 | Allineamento Monitor | Contatto su un solo vertice o snap orizzontale forzato | Garantire bordi condivisi e disattivare lo snap automatico di DMS per layout verticali |
 | Keyring non sbloccato | Trattino '-' in PAM o mancanza di variabili D-Bus | Rimuovere '-' da pam_gnome_keyring e usare dbus-update-activation-environment |
-| Rimozione pacchetti protetti (DNF5) | DNF5 blocca la rimozione di pacchetti critici (come `sudo`) | Usare `--setopt=protected_packages=` per azzerare la lista protezione e `--allow-erasing` |
+| Rimozione pacchetti protetti (DNF5) | DNF5 blocca la rimozione di pacchetti critici (come `sudo`) | Usare `--setopt=protected_packages=` (globale) e `--allowerasing` (dopo il comando install) |
 | Asset tracciati rimossi per errore | Pulizia manuale troppo aggressiva dei file di build | Distinguere tra segreti (da cancellare) e asset pubblici tracciati (da mantenere) |
 | Esecuzione pipe non verificata (Curl) | Piping di `curl` in `sh` senza `-f` esegue messaggi di errore | Usare sempre `curl -fsSL` e installare esplicitamente `tar`, `xz`, `jq` nello stage builder |
