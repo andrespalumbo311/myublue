@@ -12,6 +12,7 @@ on:
     paths-ignore:
       - '**/README.md'
       - 'CONTRIBUTING.md'
+      - 'PROJECTS.md'
       - 'LICENSE'
       - 'artifacthub-repo.yml'
       - '.gitignore'
