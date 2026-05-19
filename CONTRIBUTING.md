@@ -40,6 +40,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **Protected Package Swap Constraints (DNF5)** | DNF5 prevents the removal of critical packages (e.g., `sudo`) defined in `protected_packages` even if a replacement is provided in the same transaction. | Use `--setopt=protected_packages=` to temporarily clear the protection list during the swap transaction. Prefer a single transaction with `--allow-erasing`. |
 | **Repository Asset Persistence** | Over-aggressive manual cleanup of build artifacts can lead to the accidental deletion of tracked repository assets (like `.der` certificates). | Distinguish between untracked build secrets (to be removed) and tracked public assets (to be preserved) before executing cleanup commands. |
 | **Unchecked Pipe Execution (Curl to Shell)** | Piping `curl` output directly to `sh" without the `-f` flag causes the shell to execute error messages (e.g., "error: 404") if the download fails. | **Always** use `curl -fsSL` when piping to a shell. Explicitly install all download/extraction utilities (`tar`, `xz`, `jq`) in the `builder` stage. |
+| **Kernel Install Dracut Failure** | DNF attempts to regenerate the initramfs via `dracut` during kernel installation, which fails in containers due to missing `modules.dep` or environment context. | Set `export KERNEL_INSTALL_SKIP_REGENERATING_INITRD=yes` during the `dnf install` command to skip redundant and failing initramfs generation. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
@@ -52,3 +53,4 @@ Before modifying the `Containerfile`, the agent should simulate or verify packag
 | Rimozione pacchetti protetti (DNF5) | DNF5 blocca la rimozione di pacchetti critici (come `sudo`) | Usare `--setopt=protected_packages=` (globale) e `--allowerasing` (dopo il comando install) |
 | Asset tracciati rimossi per errore | Pulizia manuale troppo aggressiva dei file di build | Distinguere tra segreti (da cancellare) e asset pubblici tracciati (da mantenere) |
 | Esecuzione pipe non verificata (Curl) | Piping di `curl` in `sh` senza `-f` esegue messaggi di errore | Usare sempre `curl -fsSL` e installare esplicitamente `tar`, `xz`, `jq` nello stage builder |
+| Fallimento Dracut durante installazione Kernel | DNF tenta di rigenerare l'initramfs in un container | Usare `export KERNEL_INSTALL_SKIP_REGENERATING_INITRD=yes` per saltare la generazione |
