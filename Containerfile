@@ -50,6 +50,9 @@ RUN --mount=type=secret,id=MOK_key \
     --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     mkdir -p /etc/kernel && \
     echo "initrd_generator=none" > /etc/kernel/install.conf && \
+    # Rimozione kernel stock e pulizia moduli per evitare duplicati nel linting
+    dnf5 -y --setopt=protected_packages= remove kernel kernel-core kernel-modules kernel-modules-extra && \
+    rm -rf /usr/lib/modules/* && \
     dnf5 -y --setopt=protected_packages= install \
         kernel-cachyos-lto sudo-rs uutils-coreutils sbsigntools \
         --allowerasing && \

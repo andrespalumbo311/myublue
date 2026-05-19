@@ -41,6 +41,7 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **Repository Asset Persistence** | Over-aggressive manual cleanup of build artifacts can lead to the accidental deletion of tracked repository assets (like `.der` certificates). | Distinguish between untracked build secrets (to be removed) and tracked public assets (to be preserved) before executing cleanup commands. |
 | **Unchecked Pipe Execution (Curl to Shell)** | Piping `curl` output directly to `sh" without the `-f` flag causes the shell to execute error messages (e.g., "error: 404") if the download fails. | **Always** use `curl -fsSL` when piping to a shell. Explicitly install all download/extraction utilities (`tar`, `xz`, `jq`) in the `builder` stage. |
 | **Kernel Install Dracut Failure** | DNF attempts to regenerate the initramfs via `dracut` during kernel installation, which fails in containers due to missing `modules.dep` or environment context. | Disable automatic generation by creating `/etc/kernel/install.conf` with `initrd_generator=none` before installation. Then, manually run `depmod` and `dracut` after the RPM transaction. |
+| **Multiple Kernels in Bootc Lint** | `bootc container lint` fails if multiple kernel versions are found in `/usr/lib/modules/`. | Explicitly remove all existing kernel packages and wipe `/usr/lib/modules/*` before installing a new custom kernel. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
@@ -54,4 +55,5 @@ Before modifying the `Containerfile`, the agent should simulate or verify packag
 | Asset tracciati rimossi per errore | Pulizia manuale troppo aggressiva dei file di build | Distinguere tra segreti (da cancellare) e asset pubblici tracciati (da mantenere) |
 | Esecuzione pipe non verificata (Curl) | Piping di `curl` in `sh` senza `-f` esegue messaggi di errore | Usare sempre `curl -fsSL` e installare esplicitamente `tar`, `xz`, `jq` nello stage builder |
 | Fallimento Dracut durante installazione Kernel | DNF tenta di rigenerare l'initramfs in un container | Disabilitare la generazione automatica con `initrd_generator=none` in `/etc/kernel/install.conf` e poi lanciare `depmod` e `dracut` manualmente |
+| Kernel Multipli in Bootc Lint | `bootc container lint` fallisce se trova più versioni del kernel in `/usr/lib/modules/` | Rimuovere esplicitamente i pacchetti kernel esistenti e pulire `/usr/lib/modules/*` prima di installare il nuovo kernel |
 | Nomi pacchetti non verificati (COPR) | Assumere nomi pacchetti (es. `-modules-extra`) senza verifica empirica | Verificare sempre i nomi esatti nei COPR, che spesso non seguono gli standard Fedora |
