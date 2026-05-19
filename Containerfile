@@ -6,7 +6,7 @@ ENV CARGO_HOME=/tmp/cargo
 RUN dnf install -y \
     git cargo clang clang-devel llvm-devel \
     libbpf-devel elfutils-libelf-devel zlib-devel \
-    make pkgconf bpftool meson curl jq
+    make pkgconf bpftool meson curl jq tar xz
 
 # Compilazione scx (sched-ext)
 RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
@@ -17,11 +17,11 @@ RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
     cp target/release/scx_rusty /tmp/scx-build/
 
 # Download utility (Starship, Topgrade, uupd)
-RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir /tmp/scx-build && \
-    TOPGRADE_URL=$(curl -s https://api.github.com/repos/topgrade-rs/topgrade/releases/latest | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl")) | .browser_download_url') && \
-    curl -L "$TOPGRADE_URL" | tar -xz -C /tmp/scx-build topgrade && \
-    UUPD_URL=$(curl -s https://api.github.com/repos/ublue-os/uupd/releases/latest | jq -r '.assets[] | select(.name | contains("uupd_Linux_x86_64")) | .browser_download_url') && \
-    curl -L "$UUPD_URL" | tar -xz -C /tmp/scx-build uupd && \
+RUN curl -fsSL https://starship.rs/install.sh | sh -s -- --yes --bin-dir /tmp/scx-build && \
+    TOPGRADE_URL=$(curl -fsSL https://api.github.com/repos/topgrade-rs/topgrade/releases/latest | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl")) | .browser_download_url') && \
+    curl -fsSL "$TOPGRADE_URL" | tar -xz -C /tmp/scx-build topgrade && \
+    UUPD_URL=$(curl -fsSL https://api.github.com/repos/ublue-os/uupd/releases/latest | jq -r '.assets[] | select(.name | contains("uupd_Linux_x86_64")) | .browser_download_url') && \
+    curl -fsSL "$UUPD_URL" | tar -xz -C /tmp/scx-build uupd && \
     chmod +x /tmp/scx-build/topgrade /tmp/scx-build/uupd
 
 # STAGE 2: Immagine Finale
