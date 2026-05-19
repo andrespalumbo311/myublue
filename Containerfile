@@ -50,7 +50,7 @@ RUN --mount=type=secret,id=MOK_key \
     --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     export KERNEL_INSTALL_SKIP_REGENERATING_INITRD=yes && \
     dnf5 -y --setopt=protected_packages= install \
-        kernel-cachyos-lto kernel-cachyos-lto-modules-extra sudo-rs uutils-coreutils sbsigntools openssl \
+        kernel-cachyos-lto sudo-rs uutils-coreutils sbsigntools \
         --allowerasing && \
     ln -sf /usr/bin/sudo-rs /usr/bin/sudo && \
     KVER=$(ls /lib/modules | grep cachyos | head -n 1) && \
