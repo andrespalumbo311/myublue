@@ -110,11 +110,20 @@ jobs:
             fi
           done < labels.txt
 
+          # Create temp files for secrets
+          echo "${{ secrets.MOK_KEY }}" > MOK.key
+          echo "${{ secrets.MOK_CRT }}" > MOK.crt
+
           # Build directly in root storage (sudo)
           sudo buildah bud \
             "${LABEL_ARGS[@]}" \
+            --secret id=MOK_key,src=MOK.key \
+            --secret id=MOK_crt,src=MOK.crt \
             --tag localhost/${{ env.IMAGE_NAME }}:latest \
             .
+          
+          # Clean up
+          rm MOK.key MOK.crt
 
           # Apply all tags from metadata with sudo
           for tag in ${{ steps.metadata.outputs.tags }}; do

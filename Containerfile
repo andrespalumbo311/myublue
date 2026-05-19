@@ -40,6 +40,22 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable avengemedia/dms && \
     dnf5 -y copr enable avengemedia/danklinux && \
     dnf5 -y copr enable bieszczaders/kernel-cachyos-addons && \
+    dnf5 -y copr enable bieszczaders/kernel-cachyos-lto && \
+    dnf5 -y copr enable dejan/rpms && \
+    dnf5 clean all
+
+# SWAP KERNEL, SUDO E UTILITY RUST + FIRMA SECUREBOOT
+RUN --mount=type=secret,id=MOK_key \
+    --mount=type=secret,id=MOK_crt \
+    --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
+    dnf5 -y remove kernel kernel-core kernel-modules sudo && \
+    dnf5 -y install kernel-cachyos-lto sudo-rs uutils-coreutils sbsigntools openssl && \
+    ln -sf /usr/bin/sudo-rs /usr/bin/sudo && \
+    KVER=$(ls /lib/modules | head -n 1) && \
+    sbsign --key /run/secrets/MOK_key --cert /run/secrets/MOK_crt --output /lib/modules/$KVER/vmlinuz /lib/modules/$KVER/vmlinuz && \
+    setsebool -P domain_kernel_load_modules on && \
+    dnf5 -y copr disable bieszczaders/kernel-cachyos-lto && \
+    dnf5 -y copr disable dejan/rpms && \
     dnf5 clean all
 
 # STRATO 2: Utilità CLI e System Tooling
@@ -51,6 +67,8 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     parted dosfstools exfatprogs e2fsprogs \
     fish zoxide fzf && \
     sed -i 's|SHELL=/bin/bash|SHELL=/usr/bin/fish|' /etc/default/useradd && \
+    # Ottimizzazione I/O (ADIOS)
+    echo 'ACTION=="add|change", KERNEL=="sd[a-z]*|nvme[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="adios"' > /etc/udev/rules.d/60-ioschedulers.rules && \
     dnf5 clean all
 
 # Installazione plugin Bass (per compatibilità script Bash in Fish)
@@ -78,8 +96,10 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 clean all
 
 # STRATO 4: Configurazione servizi e finalizzazione
+RUN mkdir -p /etc/pki/akmods/certs/
 COPY etc /etc
 COPY usr /usr
+COPY MOK.der /etc/pki/akmods/certs/public_key.der
 RUN if id "greetd" &>/dev/null; then \
         usermod -aG video,render,tty greetd; \
     fi && \
