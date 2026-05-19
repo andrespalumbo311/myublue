@@ -37,6 +37,8 @@ This repository has a rigid structure based on Fedora Atomic and containerized b
 | **GPU Driver Case Sensitivity** | `LIBVA_DRIVER_NAME` is case-sensitive. Using `ihd` instead of `iHD` for Intel Media Driver causes fallback to software rendering. | **Always** use `iHD` (exact case) for Intel Gen8+ hardware acceleration. Ensure the package is named **`libva-intel-media-driver`** in official Fedora repos. |
 | **Shell Resource Instability** | Enabling real-time audio visualization in DankMaterialShell (DMS) causes ~60% CPU overhead and OSD ghost popups during IPC events. | **Disable** `audioVisualizerEnabled` and `soundVolumeChanged` triggers in `settings.json` to maintain shell stability. |
 | **Audio Sink Sync (Deaf Slider)** | Decoupled volume between EasyEffects (software) and ALSA (hardware) results in non-functional sliders if hardware gain is low. | Enable **Volume Tracking** in EasyEffects global settings to synchronize software gain with the underlying hardware sink. |
+| **Protected Package Swap Constraints (DNF5)** | DNF5 prevents the removal of critical packages (e.g., `sudo`) defined in `protected_packages` even if a replacement is provided in the same transaction. | Use `--setopt=protected_packages=` to temporarily clear the protection list during the swap transaction. Prefer a single transaction with `--allow-erasing`. |
+| **Repository Asset Persistence** | Over-aggressive manual cleanup of build artifacts can lead to the accidental deletion of tracked repository assets (like `.der` certificates). | Distinguish between untracked build secrets (to be removed) and tracked public assets (to be preserved) before executing cleanup commands. |
 
 ## Package Verification (Recommended Workflow)
 Before modifying the `Containerfile`, the agent should simulate or verify package names:
@@ -46,3 +48,5 @@ Before modifying the `Containerfile`, the agent should simulate or verify packag
 | --- | --- | --- |
 | Allineamento Monitor | Contatto su un solo vertice o snap orizzontale forzato | Garantire bordi condivisi e disattivare lo snap automatico di DMS per layout verticali |
 | Keyring non sbloccato | Trattino '-' in PAM o mancanza di variabili D-Bus | Rimuovere '-' da pam_gnome_keyring e usare dbus-update-activation-environment |
+| Rimozione pacchetti protetti (DNF5) | DNF5 blocca la rimozione di pacchetti critici (come `sudo`) | Usare `--setopt=protected_packages=` per azzerare la lista protezione e `--allow-erasing` |
+| Asset tracciati rimossi per errore | Pulizia manuale troppo aggressiva dei file di build | Distinguere tra segreti (da cancellare) e asset pubblici tracciati (da mantenere) |
