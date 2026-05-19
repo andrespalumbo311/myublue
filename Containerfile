@@ -77,8 +77,10 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     parted dosfstools exfatprogs e2fsprogs \
     fish zoxide fzf && \
     sed -i 's|SHELL=/bin/bash|SHELL=/usr/bin/fish|' /etc/default/useradd && \
-    # Ottimizzazione I/O (ADIOS)
-    echo 'ACTION=="add|change", KERNEL=="sd[a-z]*|nvme[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="adios"' > /etc/udev/rules.d/60-ioschedulers.rules && \
+    # Ottimizzazione I/O (ADIOS) - Sintassi completa Origami OS
+    echo 'ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"' > /etc/udev/rules.d/60-ioschedulers.rules && \
+    echo 'ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="adios"' >> /etc/udev/rules.d/60-ioschedulers.rules && \
+    echo 'ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="adios"' >> /etc/udev/rules.d/60-ioschedulers.rules && \
     dnf5 clean all
 
 # Installazione plugin Bass (per compatibilità script Bash in Fish)
