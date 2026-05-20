@@ -1,0 +1,7 @@
+# Topgrade configuration
+# https://github.com/topgrade-rs/topgrade/blob/master/config.example.toml
+
+[commands]
+# Disable NPM updates because it's managed as a dependency of Homebrew
+# and causes symlink conflicts (EEXIST) during global updates.
+disable = ["npm"]
