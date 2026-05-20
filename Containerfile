@@ -34,8 +34,8 @@ RUN mkdir -p /tmp/verify && \
     UUPD_LATEST_URL=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .browser_download_url') && \
     UUPD_CHECKSUM_URL=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name | contains("checksums.txt")) | .browser_download_url') && \
     curl -fsSL "$UUPD_LATEST_URL" -o "/tmp/verify/$UUPD_LATEST_NAME" && \
-    curl -fsSL "$UUPD_CHECKSUM_URL" -o /tmp/verify/uupd_checksums.txt && \
-    (cd /tmp/verify && sha256sum --check --ignore-missing uupd_checksums.txt) && \
+    curl -fsSL "$UUPD_CHECKSUM_URL" -o /tmp/verify/checksums.txt && \
+    (cd /tmp/verify && sha256sum --check --ignore-missing checksums.txt) && \
     tar -xz -C /tmp/scx-build -f "/tmp/verify/$UUPD_LATEST_NAME" uupd && \
     chmod +x /tmp/scx-build/* && \
     rm -rf /tmp/verify /tmp/cosign.pub
