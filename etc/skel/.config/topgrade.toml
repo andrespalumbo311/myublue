@@ -4,4 +4,5 @@
 [commands]
 # Disable NPM updates because it's managed as a dependency of Homebrew
 # and causes symlink conflicts (EEXIST) during global updates.
-disable = ["npm"]
+# Note: 'disable' expects a space-separated string, not a list.
+disable = "npm"
