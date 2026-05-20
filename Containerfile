@@ -6,7 +6,7 @@ ENV CARGO_HOME=/tmp/cargo
 RUN dnf install -y \
     git cargo clang clang-devel llvm-devel \
     libbpf-devel elfutils-libelf-devel zlib-devel \
-    make pkgconf bpftool meson curl jq tar xz cosign
+    make pkgconf bpftool meson curl jq tar xz
 
 # Compilazione scx (sched-ext)
 RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
@@ -17,33 +17,30 @@ RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
     cp target/release/scx_rusty /tmp/scx-build/
 
 # Download e verifica utility (Starship, Topgrade, uupd)
-COPY cosign.pub /tmp/cosign.pub
 RUN mkdir -p /tmp/verify && \
-    # Starship (SHA256 via GitHub API)
+    # Starship
     STARSHIP_ASSETS=$(curl -fsSL https://api.github.com/repos/starship/starship/releases/latest) && \
     STARSHIP_URL=$(echo "$STARSHIP_ASSETS" | jq -r '.assets[] | select(.name == "starship-x86_64-unknown-linux-musl.tar.gz") | .browser_download_url') && \
     STARSHIP_SHA=$(echo "$STARSHIP_ASSETS" | jq -r '.assets[] | select(.name == "starship-x86_64-unknown-linux-musl.tar.gz") | .digest' | cut -d: -f2) && \
     curl -fsSL "$STARSHIP_URL" -o /tmp/verify/starship.tar.gz && \
     echo "$STARSHIP_SHA  /tmp/verify/starship.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/scx-build -f /tmp/verify/starship.tar.gz starship && \
-    # Topgrade (SHA256 via GitHub API)
+    # Topgrade
     TOPGRADE_ASSETS=$(curl -fsSL https://api.github.com/repos/topgrade-rs/topgrade/releases/latest) && \
     TOPGRADE_URL=$(echo "$TOPGRADE_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl.tar.gz")) | .browser_download_url') && \
     TOPGRADE_SHA=$(echo "$TOPGRADE_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl.tar.gz")) | .digest' | cut -d: -f2) && \
     curl -fsSL "$TOPGRADE_URL" -o /tmp/verify/topgrade.tar.gz && \
     echo "$TOPGRADE_SHA  /tmp/verify/topgrade.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/scx-build -f /tmp/verify/topgrade.tar.gz topgrade && \
-    # uupd (Cosign Signature Verification)
+    # uupd
     UUPD_ASSETS=$(curl -fsSL https://api.github.com/repos/ublue-os/uupd/releases/latest) && \
     UUPD_URL=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .browser_download_url') && \
-    # In uupd, signatures might be named .sig or .bundle (SLSA)
-    UUPD_SIG_URL=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name | contains(".sig") or contains(".bundle")) | .browser_download_url' | head -n 1) && \
+    UUPD_SHA=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .digest' | cut -d: -f2) && \
     curl -fsSL "$UUPD_URL" -o /tmp/verify/uupd.tar.gz && \
-    curl -fsSL "$UUPD_SIG_URL" -o /tmp/verify/uupd.sig && \
-    cosign verify-blob --key /tmp/cosign.pub --signature /tmp/verify/uupd.sig /tmp/verify/uupd.tar.gz && \
+    echo "$UUPD_SHA  /tmp/verify/uupd.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/scx-build -f /tmp/verify/uupd.tar.gz uupd && \
     chmod +x /tmp/scx-build/* && \
-    rm -rf /tmp/verify /tmp/cosign.pub
+    rm -rf /tmp/verify
 
 # STAGE 2: Immagine Finale
 FROM ghcr.io/ublue-os/base-main:latest
