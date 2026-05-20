@@ -1,8 +1,12 @@
 # Topgrade configuration
 # https://github.com/topgrade-rs/topgrade/blob/master/config.example.toml
 
-[commands]
-# Disable NPM updates because it's managed as a dependency of Homebrew
-# and causes symlink conflicts (EEXIST) during global updates.
-# Note: 'disable' expects a space-separated string, not a list.
-disable = "npm"
+[misc]
+# Disable steps that cause conflicts or are unwanted
+# Note: disable expects a list of strings
+disable = ["npm"]
+
+[linux]
+# Enable bootc for Fedora/CentOS/RHEL Atomic variants
+# This allows Topgrade to use 'sudo bootc upgrade' correctly.
+bootc = true
