@@ -15,5 +15,4 @@ L'obiettivo è ridurre drasticamente la dipendenza da repository COPR personali 
 - [ ] **Build Condizionali**: Implementare controlli che triggerano la build solo se ci sono nuovi rilasci "upstream" (kernel o utility critiche), ottimizzando l'uso delle risorse GitHub Actions.
 
 ## 3. Ottimizzazioni e Sicurezza
-- [ ] **MOK Key Rotation**: Definire una procedura per la rotazione periodica delle chiavi MOK per il Secure Boot.
 - [ ] **Minimal Image**: Analizzare ulteriormente i pacchetti installati per rimuovere dipendenze legacy ereditate dall'immagine base Fedora, puntando a un'immagine ancora più snella e performante.
