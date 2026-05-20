@@ -2,12 +2,22 @@
 # https://github.com/topgrade-rs/topgrade/blob/master/config.example.toml
 
 [misc]
-# Perform only specified steps
-only = ["system", "brew_formula", "brew_cask", "flatpak", "distrobox"]
+# Core update managers and tools with internal plugin systems
+only = [
+    "system",
+    "brew_formula",
+    "brew_cask",
+    "flatpak",
+    "distrobox",
+    "firmware",
+    "micro",
+    "yazi"
+]
 
-# Disable 'node' (which updates npm) to prevent symlink conflicts with Homebrew
-disable = ["node"]
+# Disable 'node' (npm) to prevent symlink conflicts with Homebrew.
+# 'uv' is managed as a formula by Homebrew.
+disable = ["node", "uv"]
 
 [linux]
-# Enable bootc for Fedora/CentOS/RHEL Atomic variants
+# Enable bootc for Fedora Atomic
 bootc = true
