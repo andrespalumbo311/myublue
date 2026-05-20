@@ -3,11 +3,11 @@
 
 [misc]
 # Perform only specified steps
-only = ["system", "brew_formula", "brew_cask", "flatpak"]
-# Explicitly disable npm to prevent symlink conflicts
-disable = ["npm"]
+only = ["system", "brew_formula", "brew_cask", "flatpak", "distrobox"]
+
+# Disable 'node' (which updates npm) to prevent symlink conflicts with Homebrew
+disable = ["node"]
 
 [linux]
 # Enable bootc for Fedora/CentOS/RHEL Atomic variants
-# This allows Topgrade to use 'sudo bootc upgrade' correctly.
 bootc = true
