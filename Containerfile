@@ -24,18 +24,19 @@ RUN mkdir -p /tmp/verify && \
     curl -fsSL https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-musl.tar.gz.sha256 -o /tmp/verify/starship.tar.gz.sha256 && \
     echo "$(cat /tmp/verify/starship.tar.gz.sha256)  /tmp/verify/starship.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/scx-build -f /tmp/verify/starship.tar.gz starship && \
-    # Topgrade
+    # Topgrade (No checksum file available in latest releases)
     TOPGRADE_LATEST_URL=$(curl -fsSL https://api.github.com/repos/topgrade-rs/topgrade/releases/latest | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl.tar.gz")) | .browser_download_url') && \
     curl -fsSL "$TOPGRADE_LATEST_URL" -o /tmp/verify/topgrade.tar.gz && \
-    curl -fsSL "${TOPGRADE_LATEST_URL}.sha256" -o /tmp/verify/topgrade.tar.gz.sha256 && \
-    echo "$(cat /tmp/verify/topgrade.tar.gz.sha256)  /tmp/verify/topgrade.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/scx-build -f /tmp/verify/topgrade.tar.gz topgrade && \
     # uupd
-    UUPD_LATEST_URL=$(curl -fsSL https://api.github.com/repos/ublue-os/uupd/releases/latest | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .browser_download_url') && \
-    curl -fsSL "$UUPD_LATEST_URL" -o /tmp/verify/uupd.tar.gz && \
-    curl -fsSL "${UUPD_LATEST_URL}.sig" -o /tmp/verify/uupd.tar.gz.sig && \
-    cosign verify-blob --key /tmp/cosign.pub --signature /tmp/verify/uupd.tar.gz.sig /tmp/verify/uupd.tar.gz && \
-    tar -xz -C /tmp/scx-build -f /tmp/verify/uupd.tar.gz uupd && \
+    UUPD_ASSETS=$(curl -fsSL https://api.github.com/repos/ublue-os/uupd/releases/latest) && \
+    UUPD_LATEST_NAME=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .name') && \
+    UUPD_LATEST_URL=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .browser_download_url') && \
+    UUPD_CHECKSUM_URL=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name | contains("checksums.txt")) | .browser_download_url') && \
+    curl -fsSL "$UUPD_LATEST_URL" -o "/tmp/verify/$UUPD_LATEST_NAME" && \
+    curl -fsSL "$UUPD_CHECKSUM_URL" -o /tmp/verify/uupd_checksums.txt && \
+    (cd /tmp/verify && sha256sum --check --ignore-missing uupd_checksums.txt) && \
+    tar -xz -C /tmp/scx-build -f "/tmp/verify/$UUPD_LATEST_NAME" uupd && \
     chmod +x /tmp/scx-build/* && \
     rm -rf /tmp/verify /tmp/cosign.pub
 
