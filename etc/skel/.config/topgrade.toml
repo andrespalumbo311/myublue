@@ -2,8 +2,9 @@
 # https://github.com/topgrade-rs/topgrade/blob/master/config.example.toml
 
 [misc]
-# Disable steps that cause conflicts or are unwanted
-# Note: disable expects a list of strings
+# Perform only specified steps
+only = ["system", "brew_formula", "brew_cask", "flatpak"]
+# Explicitly disable npm to prevent symlink conflicts
 disable = ["npm"]
 
 [linux]
