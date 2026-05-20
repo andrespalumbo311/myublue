@@ -6,7 +6,7 @@ ENV CARGO_HOME=/tmp/cargo
 RUN dnf install -y \
     git cargo clang clang-devel llvm-devel \
     libbpf-devel elfutils-libelf-devel zlib-devel \
-    make pkgconf bpftool meson curl jq tar xz cosign
+    make pkgconf bpftool meson curl jq tar xz
 
 # Compilazione scx (sched-ext)
 RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
@@ -17,28 +17,30 @@ RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
     cp target/release/scx_rusty /tmp/scx-build/
 
 # Download e verifica utility (Starship, Topgrade, uupd)
-COPY cosign.pub /tmp/cosign.pub
 RUN mkdir -p /tmp/verify && \
     # Starship
-    curl -fsSL https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-musl.tar.gz -o /tmp/verify/starship.tar.gz && \
-    curl -fsSL https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-musl.tar.gz.sha256 -o /tmp/verify/starship.tar.gz.sha256 && \
-    echo "$(cat /tmp/verify/starship.tar.gz.sha256)  /tmp/verify/starship.tar.gz" | sha256sum --check && \
+    STARSHIP_ASSETS=$(curl -fsSL https://api.github.com/repos/starship/starship/releases/latest) && \
+    STARSHIP_URL=$(echo "$STARSHIP_ASSETS" | jq -r '.assets[] | select(.name == "starship-x86_64-unknown-linux-musl.tar.gz") | .browser_download_url') && \
+    STARSHIP_SHA=$(echo "$STARSHIP_ASSETS" | jq -r '.assets[] | select(.name == "starship-x86_64-unknown-linux-musl.tar.gz") | .digest' | cut -d: -f2) && \
+    curl -fsSL "$STARSHIP_URL" -o /tmp/verify/starship.tar.gz && \
+    echo "$STARSHIP_SHA  /tmp/verify/starship.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/scx-build -f /tmp/verify/starship.tar.gz starship && \
-    # Topgrade (No checksum file available in latest releases)
-    TOPGRADE_LATEST_URL=$(curl -fsSL https://api.github.com/repos/topgrade-rs/topgrade/releases/latest | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl.tar.gz")) | .browser_download_url') && \
-    curl -fsSL "$TOPGRADE_LATEST_URL" -o /tmp/verify/topgrade.tar.gz && \
+    # Topgrade
+    TOPGRADE_ASSETS=$(curl -fsSL https://api.github.com/repos/topgrade-rs/topgrade/releases/latest) && \
+    TOPGRADE_URL=$(echo "$TOPGRADE_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl.tar.gz")) | .browser_download_url') && \
+    TOPGRADE_SHA=$(echo "$TOPGRADE_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl.tar.gz")) | .digest' | cut -d: -f2) && \
+    curl -fsSL "$TOPGRADE_URL" -o /tmp/verify/topgrade.tar.gz && \
+    echo "$TOPGRADE_SHA  /tmp/verify/topgrade.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/scx-build -f /tmp/verify/topgrade.tar.gz topgrade && \
     # uupd
     UUPD_ASSETS=$(curl -fsSL https://api.github.com/repos/ublue-os/uupd/releases/latest) && \
-    UUPD_LATEST_NAME=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .name') && \
-    UUPD_LATEST_URL=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .browser_download_url') && \
-    UUPD_CHECKSUM_URL=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name | contains("checksums.txt")) | .browser_download_url') && \
-    curl -fsSL "$UUPD_LATEST_URL" -o "/tmp/verify/$UUPD_LATEST_NAME" && \
-    curl -fsSL "$UUPD_CHECKSUM_URL" -o /tmp/verify/checksums.txt && \
-    (cd /tmp/verify && sha256sum --check --ignore-missing checksums.txt) && \
-    tar -xz -C /tmp/scx-build -f "/tmp/verify/$UUPD_LATEST_NAME" uupd && \
+    UUPD_URL=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .browser_download_url') && \
+    UUPD_SHA=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .digest' | cut -d: -f2) && \
+    curl -fsSL "$UUPD_URL" -o /tmp/verify/uupd.tar.gz && \
+    echo "$UUPD_SHA  /tmp/verify/uupd.tar.gz" | sha256sum --check && \
+    tar -xz -C /tmp/scx-build -f /tmp/verify/uupd.tar.gz uupd && \
     chmod +x /tmp/scx-build/* && \
-    rm -rf /tmp/verify /tmp/cosign.pub
+    rm -rf /tmp/verify
 
 # STAGE 2: Immagine Finale
 FROM ghcr.io/ublue-os/base-main:latest
