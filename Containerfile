@@ -6,7 +6,7 @@ ENV CARGO_HOME=/tmp/cargo
 RUN dnf install -y \
     git cargo clang clang-devel llvm-devel \
     libbpf-devel elfutils-libelf-devel zlib-devel \
-    make pkgconf bpftool meson curl jq tar xz
+    make pkgconf bpftool meson curl jq tar xz cosign
 
 # Compilazione scx (sched-ext)
 RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
@@ -16,13 +16,28 @@ RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
     cp target/release/scx_lavd /tmp/scx-build/ && \
     cp target/release/scx_rusty /tmp/scx-build/
 
-# Download utility (Starship, Topgrade, uupd)
-RUN curl -fsSL https://starship.rs/install.sh | sh -s -- --yes --bin-dir /tmp/scx-build && \
-    TOPGRADE_URL=$(curl -fsSL https://api.github.com/repos/topgrade-rs/topgrade/releases/latest | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl")) | .browser_download_url') && \
-    curl -fsSL "$TOPGRADE_URL" | tar -xz -C /tmp/scx-build topgrade && \
-    UUPD_URL=$(curl -fsSL https://api.github.com/repos/ublue-os/uupd/releases/latest | jq -r '.assets[] | select(.name | contains("uupd_Linux_x86_64")) | .browser_download_url') && \
-    curl -fsSL "$UUPD_URL" | tar -xz -C /tmp/scx-build uupd && \
-    chmod +x /tmp/scx-build/topgrade /tmp/scx-build/uupd
+# Download e verifica utility (Starship, Topgrade, uupd)
+COPY cosign.pub /tmp/cosign.pub
+RUN mkdir -p /tmp/verify && \
+    # Starship
+    curl -fsSL https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-musl.tar.gz -o /tmp/verify/starship.tar.gz && \
+    curl -fsSL https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-musl.tar.gz.sha256 -o /tmp/verify/starship.tar.gz.sha256 && \
+    echo "$(cat /tmp/verify/starship.tar.gz.sha256)  /tmp/verify/starship.tar.gz" | sha256sum --check && \
+    tar -xz -C /tmp/scx-build -f /tmp/verify/starship.tar.gz starship && \
+    # Topgrade
+    TOPGRADE_LATEST_URL=$(curl -fsSL https://api.github.com/repos/topgrade-rs/topgrade/releases/latest | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl.tar.gz")) | .browser_download_url') && \
+    curl -fsSL "$TOPGRADE_LATEST_URL" -o /tmp/verify/topgrade.tar.gz && \
+    curl -fsSL "${TOPGRADE_LATEST_URL}.sha256" -o /tmp/verify/topgrade.tar.gz.sha256 && \
+    echo "$(cat /tmp/verify/topgrade.tar.gz.sha256)  /tmp/verify/topgrade.tar.gz" | sha256sum --check && \
+    tar -xz -C /tmp/scx-build -f /tmp/verify/topgrade.tar.gz topgrade && \
+    # uupd
+    UUPD_LATEST_URL=$(curl -fsSL https://api.github.com/repos/ublue-os/uupd/releases/latest | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .browser_download_url') && \
+    curl -fsSL "$UUPD_LATEST_URL" -o /tmp/verify/uupd.tar.gz && \
+    curl -fsSL "${UUPD_LATEST_URL}.sig" -o /tmp/verify/uupd.tar.gz.sig && \
+    cosign verify-blob --key /tmp/cosign.pub --signature /tmp/verify/uupd.tar.gz.sig /tmp/verify/uupd.tar.gz && \
+    tar -xz -C /tmp/scx-build -f /tmp/verify/uupd.tar.gz uupd && \
+    chmod +x /tmp/scx-build/* && \
+    rm -rf /tmp/verify /tmp/cosign.pub
 
 # STAGE 2: Immagine Finale
 FROM ghcr.io/ublue-os/base-main:latest
