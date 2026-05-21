@@ -123,7 +123,7 @@ RUN if id "greetd" &>/dev/null; then \
 fi && \
 chmod +x /etc/skel/.config/niri/scripts/*.sh && \
     dconf update && \
-    systemctl enable tailscaled.service greetd.service uupd.timer scx.service power-profiles-daemon.service bluetooth.service bluetooth-poweroff.service && \
+    systemctl enable tailscaled.service greetd.service uupd.timer scx.service scx_loader.service power-profiles-daemon.service bluetooth.service bluetooth-poweroff.service && \
     systemctl --global enable easyeffects.service && \
     systemctl disable rpm-ostreed-automatic.timer
 

@@ -6,8 +6,8 @@ After=network.target
 [Service]
 Type=simple
 EnvironmentFile=-/etc/default/scx
-# Utilizziamo scxctl per caricare lo scheduler tramite scx_loader se attivo, o direttamente
-ExecStart=/usr/bin/scx_loader -s ${SCX_SCHEDULER}
+# Avviamo direttamente lo scheduler scelto per garantire l'attivazione al boot
+ExecStart=/usr/bin/${SCX_SCHEDULER}
 # Assicura che se il manager cambia lo scheduler, il servizio non vada in conflitto
 ExecStop=/usr/bin/scxctl stop
 Restart=on-failure
