@@ -58,12 +58,12 @@ RUN --mount=type=secret,id=MOK_key \
     dnf5 -y --setopt=protected_packages= remove kernel kernel-core kernel-modules kernel-modules-extra && \
     rm -rf /usr/lib/modules/* && \
     # Mocking GRUB per evitare errori in ambiente container durante l'installazione del kernel
-    mkdir -p /usr/local/bin && \
-    echo -e '#!/bin/sh\nexit 0' > /usr/local/bin/grub2-probe && \
-    echo -e '#!/bin/sh\nexit 0' > /usr/local/bin/grub2-editenv && \
-    chmod +x /usr/local/bin/grub2-probe /usr/local/bin/grub2-editenv && \
-    # Installazione Kernel CachyOS
-    dnf5 -y --setopt=protected_packages= install \
+    mkdir -p /tmp/bin && \
+    echo -e '#!/bin/sh\nexit 0' > /tmp/bin/grub2-probe && \
+    echo -e '#!/bin/sh\nexit 0' > /tmp/bin/grub2-editenv && \
+    chmod +x /tmp/bin/grub2-probe /tmp/bin/grub2-editenv && \
+    # Installazione Kernel CachyOS con PATH override per i mock
+    PATH=/tmp/bin:$PATH dnf5 -y --setopt=protected_packages= install \
         kernel-cachyos-lto sudo-rs uutils-coreutils sbsigntools \
         --allowerasing && \
     rm /etc/kernel/install.conf && \
@@ -74,7 +74,7 @@ RUN --mount=type=secret,id=MOK_key \
     chmod 0600 /lib/modules/$KVER/initramfs.img && \
     sbsign --key /run/secrets/MOK_key --cert /run/secrets/MOK_crt --output /lib/modules/$KVER/vmlinuz /lib/modules/$KVER/vmlinuz && \
     # Pulizia post-installazione per bootc lint
-    rm -rf /boot/* /usr/local/bin/grub2-probe /usr/local/bin/grub2-editenv && \
+    rm -rf /boot/* /tmp/bin && \
     setsebool -P domain_kernel_load_modules on && \
     dnf5 -y copr disable bieszczaders/kernel-cachyos-lto && \
     dnf5 -y copr disable dejan/rpms && \
