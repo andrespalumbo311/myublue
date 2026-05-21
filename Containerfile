@@ -118,11 +118,11 @@ RUN mkdir -p /etc/pki/akmods/certs/
 COPY etc /etc
 COPY usr /usr
 COPY MOK.der /etc/pki/akmods/certs/public_key.der
-RUN if id "greetd" &>/dev/null; then \
-        usermod -aG video,render,tty greetd; \
-    fi && \
-    chmod +x /etc/scx/scx-launcher.sh && \
-    chmod +x /etc/skel/.config/niri/scripts/*.sh && \
+if id "greetd" &>/dev/null; then \
+    usermod -aG video,render,tty greetd; \
+fi && \
+chmod +x /etc/skel/.config/niri/scripts/*.sh && \
+
     dconf update && \
     systemctl enable tailscaled.service greetd.service uupd.timer scx.service power-profiles-daemon.service bluetooth.service bluetooth-poweroff.service && \
     systemctl --global enable easyeffects.service && \

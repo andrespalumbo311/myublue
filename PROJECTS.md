@@ -17,11 +17,9 @@ L'obiettivo è ridurre drasticamente la dipendenza da repository COPR personali 
 ## 3. Ottimizzazioni e Sicurezza
 - [ ] **Minimal Image**: Analizzare ulteriormente i pacchetti installati per rimuovere dipendenze legacy ereditate dall'immagine base Fedora, puntando a un'immagine ancora più snella e performante.
 
-## 4. Evoluzione Scheduler eBPF (sched-ext)
-L'obiettivo è standardizzare la gestione degli scheduler eBPF e fornire un'interfaccia utente per il controllo granulare delle performance.
+## 5. Miglioramento Esperienza di Login
+L'obiettivo è rendere il processo di login più fluido e integrato con l'estetica del desktop.
 
-- [x] **Transizione a `scx_loader`**: Sostituire lo script personalizzato `scx-launcher.sh` con `scx_loader`.
-- [x] **Passaggio a `scx_lavd` come Default**: Sostituire `scx_rusty` con `scx_lavd` in `/etc/default/scx`.
-- [x] **Migrazione agli Scheduler Pre-compilati**: Rimuovere la fase di compilazione dal `Containerfile` e utilizzare il pacchetto `scx-scheds` dai repository CachyOS.
-- [x] **Integrazione SCX Manager**: Implementare l'interfaccia grafica di CachyOS per la gestione degli scheduler.
-- [ ] **Valutazione Persistenza Scheduler**: Valutare l'uso di un file in `/var/lib/scx/` per rendere persistenti al riavvio le scelte effettuate tramite GUI (attualmente temporanee).
+- [ ] **Transizione da `tuigreet` a `dms-greeter`**: Valutare la rimozione di `tuigreet` in favore del greeter grafico di Dank Material Shell.
+    - Configurare `greetd` per avviare `dms-greeter`.
+    - Verificare la corretta integrazione con `niri-session`.
