@@ -57,6 +57,11 @@ RUN --mount=type=secret,id=MOK_key \
     # Rimozione kernel stock e pulizia moduli per evitare duplicati nel linting
     dnf5 -y --setopt=protected_packages= remove kernel kernel-core kernel-modules kernel-modules-extra && \
     rm -rf /usr/lib/modules/* && \
+    # Mocking GRUB per evitare errori in ambiente container durante l'installazione del kernel
+    echo -e '#!/bin/sh\nexit 0' > /usr/local/bin/grub2-probe && \
+    echo -e '#!/bin/sh\nexit 0' > /usr/local/bin/grub2-editenv && \
+    chmod +x /usr/local/bin/grub2-probe /usr/local/bin/grub2-editenv && \
+    # Installazione Kernel CachyOS
     dnf5 -y --setopt=protected_packages= install \
         kernel-cachyos-lto sudo-rs uutils-coreutils sbsigntools \
         --allowerasing && \
@@ -67,6 +72,8 @@ RUN --mount=type=secret,id=MOK_key \
     dracut --kver $KVER --no-hostonly --reproducible --add ostree --force /lib/modules/$KVER/initramfs.img && \
     chmod 0600 /lib/modules/$KVER/initramfs.img && \
     sbsign --key /run/secrets/MOK_key --cert /run/secrets/MOK_crt --output /lib/modules/$KVER/vmlinuz /lib/modules/$KVER/vmlinuz && \
+    # Pulizia post-installazione per bootc lint
+    rm -rf /boot/* /usr/local/bin/grub2-probe /usr/local/bin/grub2-editenv && \
     setsebool -P domain_kernel_load_modules on && \
     dnf5 -y copr disable bieszczaders/kernel-cachyos-lto && \
     dnf5 -y copr disable dejan/rpms && \
