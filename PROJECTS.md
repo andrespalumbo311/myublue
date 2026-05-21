@@ -16,3 +16,14 @@ L'obiettivo è ridurre drasticamente la dipendenza da repository COPR personali 
 
 ## 3. Ottimizzazioni e Sicurezza
 - [ ] **Minimal Image**: Analizzare ulteriormente i pacchetti installati per rimuovere dipendenze legacy ereditate dall'immagine base Fedora, puntando a un'immagine ancora più snella e performante.
+
+## 4. Evoluzione Scheduler eBPF (sched-ext)
+L'obiettivo è standardizzare la gestione degli scheduler eBPF e fornire un'interfaccia utente per il controllo granulare delle performance.
+
+- [ ] **Transizione a `scx_loader`**: Sostituire lo script personalizzato `scx-launcher.sh` con `scx_loader`.
+    - `scx_loader` è il modo standard e raccomandato per caricare e gestire gli scheduler eBPF.
+    - Semplifica la gestione delle configurazioni e permette l'integrazione nativa con tool esterni.
+- [ ] **Integrazione SCX Manager**: Implementare l'interfaccia grafica di CachyOS per la gestione degli scheduler.
+    - Aggiungere le dipendenze Python/Qt necessarie (`python3-pyqt6`, `python3-setuptools`).
+    - Configurare le regole Polkit per permettere l'attivazione/disattivazione degli scheduler senza password (opzionale).
+    - Creare la Desktop Entry per l'integrazione nel launcher di Niri.
