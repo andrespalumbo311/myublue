@@ -1,56 +1,42 @@
-# STAGE 1: Compilazione binari custom (sched-ext) e utility
+# STAGE 1: Download utility custom
 FROM ghcr.io/ublue-os/base-main:latest AS builder
 
-# Installazione dipendenze per scx e download utility
-ENV CARGO_HOME=/tmp/cargo
-RUN dnf install -y \
-    git cargo clang clang-devel llvm-devel \
-    libbpf-devel elfutils-libelf-devel zlib-devel \
-    make pkgconf bpftool meson curl jq tar xz
-
-# Compilazione scx (sched-ext)
-RUN git clone --recursive https://github.com/sched-ext/scx.git /tmp/scx && \
-    cd /tmp/scx && \
-    cargo build --release --package scx_lavd --package scx_rusty && \
-    mkdir -p /tmp/scx-build && \
-    cp target/release/scx_lavd /tmp/scx-build/ && \
-    cp target/release/scx_rusty /tmp/scx-build/
+# Installazione dipendenze per download e verifica
+RUN dnf install -y curl jq tar xz
 
 # Download e verifica utility (Starship, Topgrade, uupd)
-RUN mkdir -p /tmp/verify && \
+RUN mkdir -p /tmp/verify /tmp/bin && \
     # Starship
     STARSHIP_ASSETS=$(curl -fsSL https://api.github.com/repos/starship/starship/releases/latest) && \
     STARSHIP_URL=$(echo "$STARSHIP_ASSETS" | jq -r '.assets[] | select(.name == "starship-x86_64-unknown-linux-musl.tar.gz") | .browser_download_url') && \
     STARSHIP_SHA=$(echo "$STARSHIP_ASSETS" | jq -r '.assets[] | select(.name == "starship-x86_64-unknown-linux-musl.tar.gz") | .digest' | cut -d: -f2) && \
     curl -fsSL "$STARSHIP_URL" -o /tmp/verify/starship.tar.gz && \
     echo "$STARSHIP_SHA  /tmp/verify/starship.tar.gz" | sha256sum --check && \
-    tar -xz -C /tmp/scx-build -f /tmp/verify/starship.tar.gz starship && \
+    tar -xz -C /tmp/bin -f /tmp/verify/starship.tar.gz starship && \
     # Topgrade
     TOPGRADE_ASSETS=$(curl -fsSL https://api.github.com/repos/topgrade-rs/topgrade/releases/latest) && \
     TOPGRADE_URL=$(echo "$TOPGRADE_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl.tar.gz")) | .browser_download_url') && \
     TOPGRADE_SHA=$(echo "$TOPGRADE_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-musl.tar.gz")) | .digest' | cut -d: -f2) && \
     curl -fsSL "$TOPGRADE_URL" -o /tmp/verify/topgrade.tar.gz && \
     echo "$TOPGRADE_SHA  /tmp/verify/topgrade.tar.gz" | sha256sum --check && \
-    tar -xz -C /tmp/scx-build -f /tmp/verify/topgrade.tar.gz topgrade && \
+    tar -xz -C /tmp/bin -f /tmp/verify/topgrade.tar.gz topgrade && \
     # uupd
     UUPD_ASSETS=$(curl -fsSL https://api.github.com/repos/ublue-os/uupd/releases/latest) && \
     UUPD_URL=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .browser_download_url') && \
     UUPD_SHA=$(echo "$UUPD_ASSETS" | jq -r '.assets[] | select(.name == "uupd_Linux_x86_64.tar.gz") | .digest' | cut -d: -f2) && \
     curl -fsSL "$UUPD_URL" -o /tmp/verify/uupd.tar.gz && \
     echo "$UUPD_SHA  /tmp/verify/uupd.tar.gz" | sha256sum --check && \
-    tar -xz -C /tmp/scx-build -f /tmp/verify/uupd.tar.gz uupd && \
-    chmod +x /tmp/scx-build/* && \
+    tar -xz -C /tmp/bin -f /tmp/verify/uupd.tar.gz uupd && \
+    chmod +x /tmp/bin/* && \
     rm -rf /tmp/verify
 
 # STAGE 2: Immagine Finale
 FROM ghcr.io/ublue-os/base-main:latest
 
 # Copia dei binari custom dallo stage di build
-COPY --from=builder /tmp/scx-build/scx_lavd /usr/bin/scx_lavd
-COPY --from=builder /tmp/scx-build/scx_rusty /usr/bin/scx_rusty
-COPY --from=builder /tmp/scx-build/starship /usr/bin/starship
-COPY --from=builder /tmp/scx-build/topgrade /usr/bin/topgrade
-COPY --from=builder /tmp/scx-build/uupd /usr/bin/uupd
+COPY --from=builder /tmp/bin/starship /usr/bin/starship
+COPY --from=builder /tmp/bin/topgrade /usr/bin/topgrade
+COPY --from=builder /tmp/bin/uupd /usr/bin/uupd
 
 # STRATO 1: Repository COPR (Manteniamo per ananicy-cpp e altri tool)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
@@ -91,7 +77,8 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     git tailscale \
     inotify-tools powertop power-profiles-daemon freerdp \
-    scx-tools flatpak udisks2 \
+    scx-scheds scx-tools scx-manager flatpak udisks2 \
+    python3-pyqt6 \
     parted dosfstools exfatprogs e2fsprogs \
     fish zoxide fzf && \
     sed -i 's|SHELL=/bin/bash|SHELL=/usr/bin/fish|' /etc/default/useradd && \
@@ -116,6 +103,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     brightnessctl grim slurp \
     pavucontrol kitty pamixer \
     libva-intel-media-driver libva-utils \
+    scx-manager python3-pyqt6 \
     easyeffects lsp-plugins \
     nautilus gvfs-mtp gvfs-smb \
     gnome-keyring gnome-keyring-pam \

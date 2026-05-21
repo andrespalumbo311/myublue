@@ -6,9 +6,12 @@ After=network.target
 [Service]
 Type=simple
 EnvironmentFile=-/etc/default/scx
-ExecStart=/bin/sh /etc/scx/scx-launcher.sh
+# Utilizziamo scxctl per caricare lo scheduler tramite scx_loader se attivo, o direttamente
+ExecStart=/usr/bin/scx_loader -s ${SCX_SCHEDULER}
+# Assicura che se il manager cambia lo scheduler, il servizio non vada in conflitto
+ExecStop=/usr/bin/scxctl stop
 Restart=on-failure
-RestartSec=3
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
