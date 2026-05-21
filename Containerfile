@@ -58,6 +58,7 @@ RUN --mount=type=secret,id=MOK_key \
     dnf5 -y --setopt=protected_packages= remove kernel kernel-core kernel-modules kernel-modules-extra && \
     rm -rf /usr/lib/modules/* && \
     # Mocking GRUB per evitare errori in ambiente container durante l'installazione del kernel
+    mkdir -p /usr/local/bin && \
     echo -e '#!/bin/sh\nexit 0' > /usr/local/bin/grub2-probe && \
     echo -e '#!/bin/sh\nexit 0' > /usr/local/bin/grub2-editenv && \
     chmod +x /usr/local/bin/grub2-probe /usr/local/bin/grub2-editenv && \
