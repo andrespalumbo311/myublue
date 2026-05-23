@@ -4,6 +4,6 @@ polkit.addRule(function(action, subject) {
          action.id == "org.freedesktop.policykit.exec" && 
          action.details.program == "/usr/bin/scx_loader") &&
         subject.isInGroup("wheel")) {
-        return polkit.Result.YES;
+        return polkit.Result.AUTH_ADMIN_KEEP;
     }
 });

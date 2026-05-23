@@ -28,17 +28,23 @@ RUN mkdir -p /tmp/verify /tmp/bin && \
     echo "$UUPD_SHA  /tmp/verify/uupd.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/bin -f /tmp/verify/uupd.tar.gz uupd && \
     # sudo-rs
-    SUDO_RS_VER="0.2.13" && \
-    curl -fsSL "https://github.com/trifectatechfoundation/sudo-rs/releases/download/v${SUDO_RS_VER}/sudo-${SUDO_RS_VER}.tar.gz" -o /tmp/verify/sudo.tar.gz && \
-    echo "1b1b8a53fc14b9ca4875860018986a900b36743ee8008b125d5d1db9b3b8f4e2  /tmp/verify/sudo.tar.gz" | sha256sum --check && \
+    SUDO_RS_ASSETS=$(curl -fsSL https://api.github.com/repos/trifectatechfoundation/sudo-rs/releases/latest) && \
+    SUDO_RS_URL=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-gnu.tar.gz") and (contains("sudo-") or contains("sudo_"))) | .browser_download_url' | head -n 1) && \
+    SUDO_RS_SHA=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-gnu.tar.gz") and (contains("sudo-") or contains("sudo_"))) | .digest' | cut -d: -f2 | head -n 1) && \
+    curl -fsSL "$SUDO_RS_URL" -o /tmp/verify/sudo.tar.gz && \
+    echo "$SUDO_RS_SHA  /tmp/verify/sudo.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/bin -f /tmp/verify/sudo.tar.gz --strip-components=1 && \
-    curl -fsSL "https://github.com/trifectatechfoundation/sudo-rs/releases/download/v${SUDO_RS_VER}/su-${SUDO_RS_VER}.tar.gz" -o /tmp/verify/su.tar.gz && \
-    echo "52a87baae4da1c19d1fdc53a912160cc097a8c52bd57c15c622f4defb31f5806  /tmp/verify/su.tar.gz" | sha256sum --check && \
+    SU_RS_URL=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-gnu.tar.gz") and (contains("su-") or contains("su_"))) | .browser_download_url' | head -n 1) && \
+    SU_RS_SHA=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-gnu.tar.gz") and (contains("su-") or contains("su_"))) | .digest' | cut -d: -f2 | head -n 1) && \
+    curl -fsSL "$SU_RS_URL" -o /tmp/verify/su.tar.gz && \
+    echo "$SU_RS_SHA  /tmp/verify/su.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/bin -f /tmp/verify/su.tar.gz --strip-components=1 && \
     # coreutils (uutils)
-    COREUTILS_VER="0.8.0" && \
-    curl -fsSL "https://github.com/uutils/coreutils/releases/download/${COREUTILS_VER}/coreutils-${COREUTILS_VER}-x86_64-unknown-linux-gnu.tar.gz" -o /tmp/verify/coreutils.tar.gz && \
-    echo "ea8f0a4f6815c1da0df539c88b4776b976983c0139879662de03bc4010bd0504  /tmp/verify/coreutils.tar.gz" | sha256sum --check && \
+    COREUTILS_ASSETS=$(curl -fsSL https://api.github.com/repos/uutils/coreutils/releases/latest) && \
+    COREUTILS_URL=$(echo "$COREUTILS_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url') && \
+    COREUTILS_SHA=$(echo "$COREUTILS_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-gnu.tar.gz")) | .digest' | cut -d: -f2) && \
+    curl -fsSL "$COREUTILS_URL" -o /tmp/verify/coreutils.tar.gz && \
+    echo "$COREUTILS_SHA  /tmp/verify/coreutils.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/bin -f /tmp/verify/coreutils.tar.gz --strip-components=1 && \
     chmod +x /tmp/bin/* && \
     rm -rf /tmp/verify
