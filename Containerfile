@@ -29,13 +29,13 @@ RUN mkdir -p /tmp/verify /tmp/bin && \
     tar -xz -C /tmp/bin -f /tmp/verify/uupd.tar.gz uupd && \
     # sudo-rs
     SUDO_RS_ASSETS=$(curl -fsSL https://api.github.com/repos/trifectatechfoundation/sudo-rs/releases/latest) && \
-    SUDO_RS_URL=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-gnu.tar.gz") and (contains("sudo-") or contains("sudo_"))) | .browser_download_url' | head -n 1) && \
-    SUDO_RS_SHA=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-gnu.tar.gz") and (contains("sudo-") or contains("sudo_"))) | .digest' | cut -d: -f2 | head -n 1) && \
+    SUDO_RS_URL=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | startswith("sudo-") and endswith(".tar.gz")) | .browser_download_url' | head -n 1) && \
+    SUDO_RS_SHA=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | startswith("sudo-") and endswith(".tar.gz")) | .digest' | cut -d: -f2 | head -n 1) && \
     curl -fsSL "$SUDO_RS_URL" -o /tmp/verify/sudo.tar.gz && \
     echo "$SUDO_RS_SHA  /tmp/verify/sudo.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/bin -f /tmp/verify/sudo.tar.gz --strip-components=1 && \
-    SU_RS_URL=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-gnu.tar.gz") and (contains("su-") or contains("su_"))) | .browser_download_url' | head -n 1) && \
-    SU_RS_SHA=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | contains("x86_64-unknown-linux-gnu.tar.gz") and (contains("su-") or contains("su_"))) | .digest' | cut -d: -f2 | head -n 1) && \
+    SU_RS_URL=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | startswith("su-") and endswith(".tar.gz")) | .browser_download_url' | head -n 1) && \
+    SU_RS_SHA=$(echo "$SUDO_RS_ASSETS" | jq -r '.assets[] | select(.name | startswith("su-") and endswith(".tar.gz")) | .digest' | cut -d: -f2 | head -n 1) && \
     curl -fsSL "$SU_RS_URL" -o /tmp/verify/su.tar.gz && \
     echo "$SU_RS_SHA  /tmp/verify/su.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/bin -f /tmp/verify/su.tar.gz --strip-components=1 && \
