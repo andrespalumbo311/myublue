@@ -5,9 +5,10 @@ Questo file tiene traccia delle evoluzioni pianificate per l'immagine OS, con l'
 ## 1. Sovranità dei Pacchetti (Source Sovereignty)
 L'obiettivo è ridurre drasticamente la dipendenza da repository COPR personali o di terze parti, preferendo l'acquisizione diretta dalle fonti ufficiali.
 
-- [ ] **Utility Rust nello Stage Builder**: Spostare l'acquisizione di `sudo-rs`, `uutils-coreutils`, `niri` e `dms` dai COPR direttamente ai repository GitHub ufficiali.
-    - Utilizzare lo stage `builder` per scaricare i binari dalle "Releases" o compilarli.
-    - Implementare la verifica dei checksum (SHA256) per ogni binario scaricato.
+- [x] **Utility Rust nello Stage Builder**: Spostata l'acquisizione di `sudo-rs` e `uutils-coreutils` dai COPR/RPM direttamente ai repository GitHub ufficiali.
+    - Utilizzo dello stage `builder` per scaricare i binari.
+    - Implementata la verifica dei checksum (SHA256) per ogni binario scaricato.
+- [ ] **Migrazione Utility DMS e Niri**: Spostare l'acquisizione di `niri` e `dms` dai COPR direttamente ai repository GitHub ufficiali (richiede valutazione compilazione vs binari).
 - [ ] **Migrazione Kernel CachyOS**: Passare dai COPR personali al repository ufficiale gestito dal team di CachyOS (se disponibile per Fedora) o automatizzare il monitoraggio delle versioni ufficiali.
 
 ## 2. Automazione e Aggiornamenti

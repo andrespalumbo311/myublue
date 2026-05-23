@@ -4,7 +4,7 @@ FROM ghcr.io/ublue-os/base-main:latest AS builder
 # Installazione dipendenze per download e verifica
 RUN dnf install -y curl jq tar xz
 
-# Download e verifica utility (Starship, Topgrade, uupd)
+# Download e verifica utility (Starship, Topgrade, uupd, sudo-rs, coreutils)
 RUN mkdir -p /tmp/verify /tmp/bin && \
     # Starship
     STARSHIP_ASSETS=$(curl -fsSL https://api.github.com/repos/starship/starship/releases/latest) && \
@@ -27,6 +27,19 @@ RUN mkdir -p /tmp/verify /tmp/bin && \
     curl -fsSL "$UUPD_URL" -o /tmp/verify/uupd.tar.gz && \
     echo "$UUPD_SHA  /tmp/verify/uupd.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/bin -f /tmp/verify/uupd.tar.gz uupd && \
+    # sudo-rs
+    SUDO_RS_VER="0.2.13" && \
+    curl -fsSL "https://github.com/trifectatechfoundation/sudo-rs/releases/download/v${SUDO_RS_VER}/sudo-${SUDO_RS_VER}.tar.gz" -o /tmp/verify/sudo.tar.gz && \
+    echo "1b1b8a53fc14b9ca4875860018986a900b36743ee8008b125d5d1db9b3b8f4e2  /tmp/verify/sudo.tar.gz" | sha256sum --check && \
+    tar -xz -C /tmp/bin -f /tmp/verify/sudo.tar.gz && \
+    curl -fsSL "https://github.com/trifectatechfoundation/sudo-rs/releases/download/v${SUDO_RS_VER}/su-${SUDO_RS_VER}.tar.gz" -o /tmp/verify/su.tar.gz && \
+    echo "52a87baae4da1c19d1fdc53a912160cc097a8c52bd57c15c622f4defb31f5806  /tmp/verify/su.tar.gz" | sha256sum --check && \
+    tar -xz -C /tmp/bin -f /tmp/verify/su.tar.gz && \
+    # coreutils (uutils)
+    COREUTILS_VER="0.8.0" && \
+    curl -fsSL "https://github.com/uutils/coreutils/releases/download/${COREUTILS_VER}/coreutils-${COREUTILS_VER}-x86_64-unknown-linux-gnu.tar.gz" -o /tmp/verify/coreutils.tar.gz && \
+    echo "ea8f0a4f6815c1da0df539c88b4776b976983c0139879662de03bc4010bd0504  /tmp/verify/coreutils.tar.gz" | sha256sum --check && \
+    tar -xz -C /tmp/bin -f /tmp/verify/coreutils.tar.gz --strip-components=1 && \
     chmod +x /tmp/bin/* && \
     rm -rf /tmp/verify
 
@@ -37,6 +50,11 @@ FROM ghcr.io/ublue-os/base-main:latest
 COPY --from=builder /tmp/bin/starship /usr/bin/starship
 COPY --from=builder /tmp/bin/topgrade /usr/bin/topgrade
 COPY --from=builder /tmp/bin/uupd /usr/bin/uupd
+COPY --from=builder /tmp/bin/sudo /usr/bin/sudo-rs
+COPY --from=builder /tmp/bin/visudo /usr/bin/visudo-rs
+COPY --from=builder /tmp/bin/sudoedit /usr/bin/sudoedit-rs
+COPY --from=builder /tmp/bin/su /usr/bin/su-rs
+COPY --from=builder /tmp/bin/coreutils /usr/bin/uutils-coreutils
 
 # STRATO 1: Repository COPR (Manteniamo per ananicy-cpp e altri tool)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
@@ -48,7 +66,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 -y copr enable dejan/rpms && \
     dnf5 clean all
 
-# SWAP KERNEL, SUDO E UTILITY RUST + FIRMA SECUREBOOT
+# SWAP KERNEL E UTILITY RUST + FIRMA SECUREBOOT
 RUN --mount=type=secret,id=MOK_key \
     --mount=type=secret,id=MOK_crt \
     --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
@@ -64,10 +82,15 @@ RUN --mount=type=secret,id=MOK_key \
     chmod +x /tmp/bin/grub2-probe /tmp/bin/grub2-editenv && \
     # Installazione Kernel CachyOS con PATH override per i mock
     PATH=/tmp/bin:$PATH dnf5 -y --setopt=protected_packages= install \
-        kernel-cachyos-lto sudo-rs uutils-coreutils sbsigntools \
+        kernel-cachyos-lto sbsigntools \
         --allowerasing && \
     rm /etc/kernel/install.conf && \
+    # Configurazione SUDO-RS (Source Sovereignty)
     ln -sf /usr/bin/sudo-rs /usr/bin/sudo && \
+    ln -sf /usr/bin/visudo-rs /usr/bin/visudo && \
+    ln -sf /usr/bin/sudoedit-rs /usr/bin/sudoedit && \
+    chown root:root /usr/bin/sudo-rs /usr/bin/su-rs && \
+    chmod 4755 /usr/bin/sudo-rs /usr/bin/su-rs && \
     KVER=$(ls /lib/modules | grep cachyos | head -n 1) && \
     depmod -a $KVER && \
     dracut --kver $KVER --no-hostonly --reproducible --add ostree --force /lib/modules/$KVER/initramfs.img && \
@@ -79,6 +102,7 @@ RUN --mount=type=secret,id=MOK_key \
     dnf5 -y copr disable bieszczaders/kernel-cachyos-lto && \
     dnf5 -y copr disable dejan/rpms && \
     dnf5 clean all
+
 
 # STRATO 2: Utilità CLI e System Tooling
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
