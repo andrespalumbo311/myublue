@@ -153,7 +153,9 @@ COPY MOK.der /etc/pki/akmods/certs/public_key.der
 RUN if id "greetd" &>/dev/null; then \
     usermod -aG video,render,tty greetd && \
     mkdir -p /var/cache/dms-greeter && \
-    chown greetd:greetd /var/cache/dms-greeter; \
+    chown greetd:greetd /var/cache/dms-greeter && \
+    chown -R greetd:greetd /etc/greetd/dms-greeter && \
+    chown -R greetd:greetd /etc/greetd/niri; \
 fi && \
 chmod +x /etc/skel/.config/niri/scripts/*.sh && \
     dconf update && \
