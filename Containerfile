@@ -131,7 +131,7 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     dnf5 install -y \
     niri dms dms-greeter \
     xdg-desktop-portal-wlr \
-    greetd tuigreet fprintd fprintd-pam \
+    greetd fprintd fprintd-pam \
     brightnessctl grim slurp \
     pavucontrol kitty pamixer \
     libva-intel-media-driver libva-utils \
@@ -151,7 +151,9 @@ COPY etc /etc
 COPY usr /usr
 COPY MOK.der /etc/pki/akmods/certs/public_key.der
 RUN if id "greetd" &>/dev/null; then \
-    usermod -aG video,render,tty greetd; \
+    usermod -aG video,render,tty greetd && \
+    mkdir -p /var/cache/dms-greeter && \
+    chown greetd:greetd /var/cache/dms-greeter; \
 fi && \
 chmod +x /etc/skel/.config/niri/scripts/*.sh && \
     dconf update && \

@@ -21,6 +21,6 @@ L'obiettivo è ridurre drasticamente la dipendenza da repository COPR personali 
 ## 5. Miglioramento Esperienza di Login
 L'obiettivo è rendere il processo di login più fluido e integrato con l'estetica del desktop.
 
-- [ ] **Transizione da `tuigreet` a `dms-greeter`**: Valutare la rimozione di `tuigreet` in favore del greeter grafico di Dank Material Shell.
-    - Configurare `greetd` per avviare `dms-greeter`.
-    - Verificare la corretta integrazione con `niri-session`.
+- [x] **Transizione da `tuigreet` a `dms-greeter`**: Valutata la rimozione di `tuigreet` in favore del greeter grafico di Dank Material Shell.
+    - Configurato `greetd` per avviare `dms-greeter`.
+    - Verificata la corretta integrazione con `niri-session`.
