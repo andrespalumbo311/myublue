@@ -31,10 +31,10 @@ RUN mkdir -p /tmp/verify /tmp/bin && \
     SUDO_RS_VER="0.2.13" && \
     curl -fsSL "https://github.com/trifectatechfoundation/sudo-rs/releases/download/v${SUDO_RS_VER}/sudo-${SUDO_RS_VER}.tar.gz" -o /tmp/verify/sudo.tar.gz && \
     echo "1b1b8a53fc14b9ca4875860018986a900b36743ee8008b125d5d1db9b3b8f4e2  /tmp/verify/sudo.tar.gz" | sha256sum --check && \
-    tar -xz -C /tmp/bin -f /tmp/verify/sudo.tar.gz && \
+    tar -xz -C /tmp/bin -f /tmp/verify/sudo.tar.gz --strip-components=1 && \
     curl -fsSL "https://github.com/trifectatechfoundation/sudo-rs/releases/download/v${SUDO_RS_VER}/su-${SUDO_RS_VER}.tar.gz" -o /tmp/verify/su.tar.gz && \
     echo "52a87baae4da1c19d1fdc53a912160cc097a8c52bd57c15c622f4defb31f5806  /tmp/verify/su.tar.gz" | sha256sum --check && \
-    tar -xz -C /tmp/bin -f /tmp/verify/su.tar.gz && \
+    tar -xz -C /tmp/bin -f /tmp/verify/su.tar.gz --strip-components=1 && \
     # coreutils (uutils)
     COREUTILS_VER="0.8.0" && \
     curl -fsSL "https://github.com/uutils/coreutils/releases/download/${COREUTILS_VER}/coreutils-${COREUTILS_VER}-x86_64-unknown-linux-gnu.tar.gz" -o /tmp/verify/coreutils.tar.gz && \
