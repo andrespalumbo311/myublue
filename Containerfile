@@ -164,7 +164,7 @@ fi && \
 chmod +x /etc/skel/.config/niri/scripts/*.sh && \
     dconf update && \
     systemctl enable tailscaled.service greetd.service uupd.timer scx.service scx_loader.service power-profiles-daemon.service bluetooth.service bluetooth-poweroff.service && \
-    systemctl --global enable easyeffects.service taildrop-auto-receive.service && \
+    systemctl --global enable easyeffects.service taildrop-auto-receive.service tailscale-systray.service && \
     systemctl disable rpm-ostreed-automatic.timer
 
 # STRATO 5: Inizializzazione Flatpak e Valent
