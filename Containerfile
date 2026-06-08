@@ -46,6 +46,13 @@ RUN mkdir -p /tmp/verify /tmp/bin && \
     curl -fsSL "$COREUTILS_URL" -o /tmp/verify/coreutils.tar.gz && \
     echo "$COREUTILS_SHA  /tmp/verify/coreutils.tar.gz" | sha256sum --check && \
     tar -xz -C /tmp/bin -f /tmp/verify/coreutils.tar.gz --strip-components=1 && \
+    # antigravity-cli
+    AGY_ASSETS=$(curl -fsSL https://api.github.com/repos/google-antigravity/antigravity-cli/releases/latest) && \
+    AGY_URL=$(echo "$AGY_ASSETS" | jq -r '.assets[] | select(.name == "agy_cli_linux_x64.tar.gz") | .browser_download_url') && \
+    AGY_SHA=$(echo "$AGY_ASSETS" | jq -r '.assets[] | select(.name == "agy_cli_linux_x64.tar.gz") | .digest' | cut -d: -f2) && \
+    curl -fsSL "$AGY_URL" -o /tmp/verify/agy.tar.gz && \
+    echo "$AGY_SHA  /tmp/verify/agy.tar.gz" | sha256sum --check && \
+    tar -xz -C /tmp/bin -f /tmp/verify/agy.tar.gz antigravity && \
     chmod +x /tmp/bin/* && \
     rm -rf /tmp/verify
 
@@ -61,6 +68,7 @@ COPY --from=builder /tmp/bin/visudo /usr/bin/visudo-rs
 COPY --from=builder /tmp/bin/sudoedit /usr/bin/sudoedit-rs
 COPY --from=builder /tmp/bin/su /usr/bin/su-rs
 COPY --from=builder /tmp/bin/coreutils /usr/bin/uutils-coreutils
+COPY --from=builder /tmp/bin/antigravity /usr/bin/antigravity
 
 # STRATO 1: Repository COPR (Manteniamo per ananicy-cpp e altri tool)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \

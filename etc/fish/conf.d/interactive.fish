@@ -15,6 +15,7 @@ if status is-interactive
     end
 
     # Aliases
+    alias agy='antigravity'
     alias ls='ls --color=auto'
     alias ll='ls -lh'
     alias la='ls -lAh'
