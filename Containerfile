@@ -56,6 +56,12 @@ RUN mkdir -p /tmp/verify /tmp/bin && \
     chmod +x /tmp/bin/* && \
     rm -rf /tmp/verify
 
+# Download JetBrains Mono Nerd Font
+RUN mkdir -p /tmp/verify /tmp/fonts && \
+    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz -o /tmp/verify/JetBrainsMono.tar.xz && \
+    tar -xf /tmp/verify/JetBrainsMono.tar.xz -C /tmp/fonts && \
+    rm -rf /tmp/verify
+
 # STAGE 2: Immagine Finale
 FROM ghcr.io/ublue-os/base-main:latest
 
@@ -69,6 +75,7 @@ COPY --from=builder /tmp/bin/sudoedit /usr/bin/sudoedit-rs
 COPY --from=builder /tmp/bin/su /usr/bin/su-rs
 COPY --from=builder /tmp/bin/coreutils /usr/bin/uutils-coreutils
 COPY --from=builder /tmp/bin/antigravity /usr/bin/antigravity
+COPY --from=builder /tmp/fonts /usr/share/fonts/JetBrainsMono
 
 # STRATO 1: Repository COPR (Manteniamo per ananicy-cpp e altri tool)
 RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
@@ -128,10 +135,11 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     parted dosfstools exfatprogs e2fsprogs \
     fish zoxide fzf && \
     sed -i 's|SHELL=/bin/bash|SHELL=/usr/bin/fish|' /etc/default/useradd && \
-    # Ottimizzazione I/O (ADIOS) - Sintassi completa Origami OS
+    # Ottimizzazione I/O (ADIOS) - Sintassi Origami OS con deviazione MicroSD su bfq
     echo 'ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"' > /etc/udev/rules.d/60-ioschedulers.rules && \
-    echo 'ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="adios"' >> /etc/udev/rules.d/60-ioschedulers.rules && \
+    echo 'ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="adios"' >> /etc/udev/rules.d/60-ioschedulers.rules && \
     echo 'ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="adios"' >> /etc/udev/rules.d/60-ioschedulers.rules && \
+    echo 'ACTION=="add|change", KERNEL=="mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="bfq"' >> /etc/udev/rules.d/60-ioschedulers.rules && \
     dnf5 clean all
 
 # Installazione plugin Bass (per compatibilità script Bash in Fish)
@@ -175,10 +183,29 @@ chmod +x /etc/skel/.config/niri/scripts/*.sh && \
     systemctl --global enable easyeffects.service taildrop-auto-receive.service tailscale-systray.service && \
     systemctl disable rpm-ostreed-automatic.timer
 
-# STRATO 5: Inizializzazione Flatpak e Valent
+# STRATO 5: Inizializzazione Flatpak, Valent e Finalizzazione
 RUN flatpak remote-delete valent || true && \
     flatpak remote-add --if-not-exists --system valent /etc/flatpak/remotes.d/valent.flatpakrepo && \
-    flatpak update --appstream valent
+    flatpak update --appstream valent && \
+    # Configurazione ID immagine per prevenire kernel panic da ibernazione obsoleta post-upgrade
+    echo "IMAGE_ID=\"myublue-\$(date +%Y%m%d)\"" >> /usr/lib/os-release && \
+    # Segregazione passwd/group in usr/lib per prevenire conflitti ostree/bootc ad ogni upgrade
+    if [ -f /etc/passwd ]; then \
+        out=$(grep -v "root" /etc/passwd) || true; \
+        if [ -n "$out" ]; then \
+            echo "$out" >> /usr/lib/passwd; \
+            echo "root:x:0:0:root:/root:/bin/bash" > /etc/passwd; \
+        fi; \
+    fi && \
+    if [ -f /etc/group ]; then \
+        out=$(grep -v "root\|wheel" /etc/group) || true; \
+        if [ -n "$out" ]; then \
+            echo "$out" >> /usr/lib/group; \
+            echo "root:x:0:" > /etc/group; \
+            echo "wheel:x:10:" >> /etc/group; \
+        fi; \
+    fi
 
 ### LINTING
 RUN bootc container lint
+

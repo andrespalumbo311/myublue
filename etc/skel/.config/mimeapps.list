@@ -1,5 +1,8 @@
 [Default Applications]
 inode/directory=org.gnome.Nautilus.desktop
+text/html=io.github.ungoogled_software.ungoogled_chromium.desktop
+x-scheme-handler/http=io.github.ungoogled_software.ungoogled_chromium.desktop
+x-scheme-handler/https=io.github.ungoogled_software.ungoogled_chromium.desktop
 
 [Added Associations]
 
