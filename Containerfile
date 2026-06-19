@@ -133,7 +133,8 @@ RUN --mount=type=cache,dst=/var/cache --mount=type=cache,dst=/var/log \
     scx-scheds scx-tools scx-manager flatpak udisks2 \
     python3-pyqt6 \
     parted dosfstools exfatprogs e2fsprogs \
-    fish zoxide fzf && \
+    fish zoxide fzf \
+    fuse fuse-libs && \
     sed -i 's|SHELL=/bin/bash|SHELL=/usr/bin/fish|' /etc/default/useradd && \
     # Ottimizzazione I/O (ADIOS) - Sintassi Origami OS con deviazione MicroSD su bfq
     echo 'ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"' > /etc/udev/rules.d/60-ioschedulers.rules && \
